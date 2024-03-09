@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "udataclasses"
+description = "CircuitPython replacement for the Python's dataclasses module."
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["circuitpython", "microcontroller", "micropython"]
+authors = [
+  { name = "Diony Rosa", email = "dhrosa+dev@gmail.com" },
+]
+dynamic = ["version"]
+
+dependencies = []
+
+[project.urls]
+"Source code" = "https://github.com/dhrosa/udataclasses"
+
+[tool.hatch.version]
+path = "src/udataclasses/__init__.py"
+
+[tool.hatch.envs.default]
+python = '3.8'
+
+[tool.hatch.envs.style]
+dependencies = ["setuptools", "isort", "black", "pylama", "mypy", "pytest"]
+
+[tool.hatch.envs.style.scripts]
+format = [
+       "isort --color src tests",
+       "black src tests",
+]
+check = [
+      "pylama --ignore E203 src tests", # E203 is not pep8-compliant, and black breaks it
+      "mypy --strict --pretty src tests",
+] 
+all = [
+    "hatch run style:format",
+    "hatch run style:check",
+]
+
+[tool.hatch.envs.test]
+dependencies = ["pytest"]
+
+[tool.hatch.envs.test.scripts]
+all = ["pytest"]
+
+[tool.pytest.ini_options]
+addopts = "--no-header -W error --showlocals -vv"
+log_level = "DEBUG"
