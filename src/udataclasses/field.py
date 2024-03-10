@@ -15,7 +15,7 @@ MISSING = MissingType()
 """Placeholder for fields with no default value."""
 
 
-def field(default: Any = MISSING) -> "Field":
+def field(*, init: bool = True, default: Any = MISSING) -> "Field":
     """Function for explicitly declaring a field."""
     return Field(default=default)
 
@@ -29,7 +29,9 @@ class Field:
     name: str
     default: Any
 
-    def __init__(self, name: str = "<UNSET>", default: Any = MISSING) -> None:
+    def __init__(
+        self, name: str = "<UNSET>", default: Any = MISSING, init: bool = True
+    ) -> None:
         self.name = name
         self.default = default
 

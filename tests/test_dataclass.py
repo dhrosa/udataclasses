@@ -1,5 +1,12 @@
-from udataclasses.dataclass import TransformSpec
+from udataclasses.dataclass import TransformSpec, dataclass
 from udataclasses.field import MISSING, Field, field
+
+
+def test_transform_spec_class_name() -> None:
+    class Empty:
+        pass
+
+    assert TransformSpec(Empty).class_name == "Empty"
 
 
 def test_transform_spec_init() -> None:
@@ -51,7 +58,7 @@ def test_transform_spec_fields() -> None:
     class Class:
         missing_default = field()
         implicit: int = 1
-        explicit = field(2)
+        explicit = field(default=2)
 
         def method(self) -> None:
             pass
@@ -61,3 +68,12 @@ def test_transform_spec_fields() -> None:
         Field("implicit", 1),
         Field("explicit", 2),
     ]
+
+
+def test_dataclass_init() -> None:
+    @dataclass
+    class Class:
+        a: int = 1
+        b: int = 2
+
+    assert repr(Class(1, 2)) == "Class(1, 2)"

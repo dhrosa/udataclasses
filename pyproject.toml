@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "udataclasses"
 description = "CircuitPython replacement for the Python's dataclasses module."
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "MIT"
 keywords = ["circuitpython", "microcontroller", "micropython"]
 authors = [
@@ -22,7 +22,7 @@ dependencies = []
 path = "src/udataclasses/__init__.py"
 
 [tool.hatch.envs.default]
-python = '3.10'
+python = '3.11'
 
 [tool.hatch.envs.style]
 dependencies = ["setuptools", "isort", "black", "pylama", "mypy", "pytest"]
