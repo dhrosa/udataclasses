@@ -15,7 +15,17 @@ MISSING = MissingType()
 """Placeholder for fields with no default value."""
 
 
-def field(*, init: bool = True, default: Any = MISSING) -> "Field":
+def field(
+    *,
+    default: Any = MISSING,
+    default_factory: Any = MISSING,
+    init: bool = True,
+    repr: bool = True,
+    hash: Any = None,
+    compare: bool = True,
+    metadata: Any = None,
+    kw_only: Any = MISSING,
+) -> "Field":
     """Function for explicitly declaring a field."""
     return Field(default=default)
 

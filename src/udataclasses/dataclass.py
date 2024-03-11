@@ -1,16 +1,24 @@
-import typing
 from typing import Any, TypeVar
 
 from . import source
-from .field import Field, field
 from .transform_spec import TransformSpec
 
 T = TypeVar("T")
 
 
-@typing.dataclass_transform(field_specifiers=(field, Field))
 def dataclass(
-    cls: type[T], /, *, init: bool = True, repr: bool = True, eq: bool = True
+    cls: type[T],
+    /,
+    *,
+    init: bool = True,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = False,
+    unsafe_hash: bool = False,
+    frozen: bool = False,
+    match_args: bool = True,
+    kw_only: bool = False,
+    slots: bool = False,
 ) -> type[T]:
     transform = TransformSpec(cls, init=init, repr=repr, eq=eq)
 

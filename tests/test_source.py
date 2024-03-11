@@ -1,7 +1,6 @@
 from textwrap import dedent
 
-from udataclasses import source
-from udataclasses.field import Field
+from udataclasses import Field, source
 
 
 def test_init() -> None:
