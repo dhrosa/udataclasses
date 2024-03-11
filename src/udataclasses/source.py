@@ -36,12 +36,12 @@ def init(fields: list[Field]) -> Lines:
     for field in fields:
         arg = field.name
         if field.default is not MISSING:
-            arg += f"={field.default!r}"
+            arg += f"={field.default_value_name}"
         args.append(arg)
     yield f"def __init__({', '.join(args)}):"
     yield indent
     for field in fields:
-        yield f"self._{field.name} = {field.name}"
+        yield f"self.{field._name} = {field.name}"
 
 
 @formatted
@@ -49,7 +49,7 @@ def getter(field: Field) -> Lines:
     yield "@property"
     yield f"def {field.name}(self):"
     yield indent
-    yield f"return self._{field.name}"
+    yield f"return self.{field._name}"
 
 
 @formatted
@@ -60,7 +60,7 @@ def setter(field: Field, frozen: bool = False) -> Lines:
     if frozen:
         yield f"raise FrozenInstanceError('{field.name}')"
     else:
-        yield f"self._{field.name} = value"
+        yield f"self.{field._name} = value"
 
 
 @formatted
@@ -70,7 +70,7 @@ def repr(fields: list[Field]) -> Lines:
     yield indent
     yield (
         "return f'{self.__class__.__name__}("
-        + ", ".join(f"{f.name}={{self._{f.name}!r}}" for f in fields)
+        + ", ".join(f"{f.name}={{self.{f._name}!r}}" for f in fields)
         + ")'"
     )
 

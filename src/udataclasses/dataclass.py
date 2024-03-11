@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
 from . import source
-from .field import FrozenInstanceError
+from .field import MISSING, FrozenInstanceError
 from .transform_spec import TransformSpec
 
 T = TypeVar("T")
@@ -54,17 +54,32 @@ def _dataclass(
         frozen=frozen,
     )
 
-    exec_globals: dict[str, Any] = {
+    for name, value in make_methods(transform).items():
+        setattr(cls, name, value)
+    return cls
+
+
+def make_global_bindings(transform: TransformSpec) -> dict[str, Any]:
+    bindings: dict[str, Any] = {
         "FrozenInstanceError": FrozenInstanceError,
     }
-    new_methods: dict[str, Any] = {}
+    for field in transform.fields:
+        if field.default is MISSING:
+            continue
+        bindings[field.default_value_name] = field.default
+    return bindings
+
+
+def make_methods(transform: TransformSpec) -> dict[str, Any]:
+    global_bindings = make_global_bindings(transform)
+    methods: dict[str, Any] = {}
 
     def add_method(code: str) -> None:
-        exec(code, exec_globals, new_methods)
+        exec(code, global_bindings, methods)
 
     for field in transform.fields:
         add_method(source.getter(field))
-        add_method(source.setter(field, frozen))
+        add_method(source.setter(field, transform.frozen))
 
     if transform.init:
         add_method(source.init(transform.fields))
@@ -79,10 +94,8 @@ def _dataclass(
         add_method(source.ge(transform.fields))
 
     if transform.hash is None:
-        new_methods["__hash__"] = None
+        methods["__hash__"] = None
     if transform.hash:
         add_method(source.hash(transform.fields))
 
-    for name, value in new_methods.items():
-        setattr(cls, name, value)
-    return cls
+    return methods

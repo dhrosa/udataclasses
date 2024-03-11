@@ -6,7 +6,7 @@ from udataclasses import Field, source
 def test_init() -> None:
     out = source.init([Field("a"), Field("b", default=2)])
     expected = """
-    def __init__(self, a, b=2):
+    def __init__(self, a, b=__dataclass_default_b):
         self._a = a
         self._b = b
     """

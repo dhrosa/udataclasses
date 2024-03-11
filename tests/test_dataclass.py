@@ -17,6 +17,16 @@ def test_repr() -> None:
     assert repr(Class(1, 2)) == "Class(a=1, b=2)"
 
 
+def test_default() -> None:
+    @dataclass
+    class Class:
+        a: int = field()
+        b: int = 0
+
+    assert Class(1) == Class(1, 0)
+    assert Class(1, 2) == Class(1, 2)
+
+
 def test_properties() -> None:
     @dataclass
     class Class:

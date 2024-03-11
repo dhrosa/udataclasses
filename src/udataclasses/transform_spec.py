@@ -10,6 +10,7 @@ class TransformSpec:
     repr: bool
     eq: bool
     order: bool
+    frozen: bool
     hash: bool | None
     """Tri-state value for adding a __hash__ method.
 
@@ -35,6 +36,7 @@ class TransformSpec:
         self.repr = repr and ("__repr__" not in cls.__dict__)
         self.eq = eq
         self.order = order
+        self.frozen = frozen
 
         self.hash = False
         if eq:

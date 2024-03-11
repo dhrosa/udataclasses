@@ -56,3 +56,12 @@ class Field:
 
     def __repr__(self) -> str:
         return f"Field({self.name!r}, {self.default!r})"
+
+    @property
+    def _name(self) -> str:
+        return f"_{self.name}"
+
+    @property
+    def default_value_name(self) -> str:
+        """Name to use for storing the default value as a global."""
+        return f"__dataclass_default_{self.name}"
