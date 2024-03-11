@@ -23,7 +23,7 @@ def dataclass(
     if transform.init:
         add_method(source.init(transform.fields))
     if transform.repr:
-        add_method(source.repr(transform.class_name, transform.fields))
+        add_method(source.repr(transform.fields))
     if transform.eq:
         add_method(source.eq(transform.fields))
 

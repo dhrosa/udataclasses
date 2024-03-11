@@ -57,18 +57,15 @@ class Source:
         with self.indent():
             yield f"self._{field.name} = value"
 
-    def repr(self, class_name: str, fields: list[Field]) -> Iterator[str]:
+    def repr(self, fields: list[Field]) -> Iterator[str]:
         """Generates the __repr__ method."""
         yield "def __repr__(self):"
         with self.indent():
-
-            def parts() -> Iterator[str]:
-                yield f"'{class_name}('"
-                for field in fields:
-                    yield f"repr(self._{field.name})"
-                yield "')'"
-
-            yield f"return {' + '.join(parts())}"
+            yield (
+                "return f'{self.__class__.__name__}("
+                + ", ".join(f"{f.name}={{self._{f.name}!r}}" for f in fields)
+                + ")'"
+            )
 
     def eq(self, fields: list[Field]) -> Iterator[str]:
         """Generates the __eq__ method."""

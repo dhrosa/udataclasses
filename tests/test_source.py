@@ -42,10 +42,10 @@ def test_setter() -> None:
 
 def test_repr() -> None:
     source = Source()
-    out = source.format(source.repr("MyClass", [Field("a"), Field("b")]))
+    out = source.format(source.repr([Field("a"), Field("b")]))
     expected = """
     def __repr__(self):
-        return 'MyClass(' + repr(self._a) + repr(self._b) + ')'
+        return f'{self.__class__.__name__}(a={self._a!r}, b={self._b!r})'
     """
     expected = dedent(expected).strip()
     assert out == expected
