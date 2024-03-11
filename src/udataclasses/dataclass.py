@@ -1,4 +1,5 @@
-from typing import Any, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar, overload
 
 from . import source
 from .transform_spec import TransformSpec
@@ -6,7 +7,32 @@ from .transform_spec import TransformSpec
 T = TypeVar("T")
 
 
+# No argument and no parenthesis overload
+@overload
+def dataclass(cls: None, /) -> Callable[[type[T]], type[T]]:
+    pass
+
+
+@overload
+def dataclass(cls: type[T], /) -> type[T]:
+    pass
+
+
 def dataclass(
+    cls: type[T] | None = None, **kwargs: Any
+) -> type[T] | Callable[[type[T]], type[T]]:
+    def wrapper(cls: type[T]) -> type[T]:
+        return _dataclass(cls, **kwargs)
+
+    if cls is None:
+        # Decorator called with no arguments
+        return wrapper
+
+    # Decorator called with arguments
+    return wrapper(cls)
+
+
+def _dataclass(
     cls: type[T],
     /,
     *,
