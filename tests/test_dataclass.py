@@ -17,6 +17,18 @@ def test_repr() -> None:
     assert repr(Class(1, 2)) == "Class(a=1, b=2)"
 
 
+def test_properties() -> None:
+    @dataclass
+    class Class:
+        a: int = field()
+
+    obj = Class(1)
+    assert obj.a == 1
+
+    obj.a = 2
+    assert obj.a == 2
+
+
 def test_eq() -> None:
     @dataclass
     class Class:
