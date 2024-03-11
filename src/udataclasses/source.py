@@ -1,7 +1,7 @@
 from collections.abc import Callable, Iterator
 from typing import ParamSpec, TypeAlias
 
-from .field import Field
+from .field import MISSING, Field
 
 
 class IndentType:
@@ -32,8 +32,13 @@ def formatted(f: Callable[P, Lines]) -> Callable[P, str]:
 @formatted
 def init(fields: list[Field]) -> Lines:
     """Generates the __init__ method."""
-    arg_names = ["self"] + [f.name for f in fields]
-    yield f"def __init__({', '.join(arg_names)}):"
+    args = ["self"]
+    for field in fields:
+        arg = field.name
+        if field.default is not MISSING:
+            arg += f"={field.default!r}"
+        args.append(arg)
+    yield f"def __init__({', '.join(args)}):"
     yield indent
     for field in fields:
         yield f"self._{field.name} = {field.name}"

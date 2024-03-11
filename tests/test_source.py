@@ -5,9 +5,9 @@ from udataclasses.field import Field
 
 
 def test_init() -> None:
-    out = source.init([Field("a"), Field("b")])
+    out = source.init([Field("a"), Field("b", default=2)])
     expected = """
-    def __init__(self, a, b):
+    def __init__(self, a, b=2):
         self._a = a
         self._b = b
     """
