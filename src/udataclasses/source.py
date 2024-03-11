@@ -77,9 +77,6 @@ def eq(fields: list[Field]) -> Lines:
     """Generates the __eq__ method."""
     yield "def __eq__(self, other):"
     yield indent
-
-    def parts() -> Iterator[str]:
-        for field in fields:
-            yield f"(self._{field.name} == other._{field.name})"
-
-    yield f"return {' and '.join(parts())}"
+    yield "return " + " and ".join(
+        f"(self._{f.name} == other._{f.name})" for f in fields
+    )
