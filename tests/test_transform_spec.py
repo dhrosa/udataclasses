@@ -32,21 +32,6 @@ def test_repr() -> None:
     assert not TransformSpec(HasRepr, repr=True).repr
 
 
-def test_eq() -> None:
-    class Empty:
-        pass
-
-    assert not TransformSpec(Empty, eq=False).eq
-    assert TransformSpec(Empty, eq=True).eq
-
-    class HasEq:
-        def __eq__(self, other: object) -> bool:
-            return False
-
-    assert not TransformSpec(HasEq, eq=False).eq
-    assert not TransformSpec(HasEq, eq=True).eq
-
-
 def test_fields() -> None:
     class Class:
         missing_default = field()

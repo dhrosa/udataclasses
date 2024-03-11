@@ -20,7 +20,7 @@ def dataclass(
     kw_only: bool = False,
     slots: bool = False,
 ) -> type[T]:
-    transform = TransformSpec(cls, init=init, repr=repr, eq=eq)
+    transform = TransformSpec(cls, init=init, repr=repr, eq=eq, order=order)
 
     new_methods: dict[str, Any] = {}
 
@@ -33,6 +33,11 @@ def dataclass(
         add_method(source.repr(transform.fields))
     if transform.eq:
         add_method(source.eq(transform.fields))
+    if transform.order:
+        add_method(source.lt(transform.fields))
+        add_method(source.le(transform.fields))
+        add_method(source.gt(transform.fields))
+        add_method(source.ge(transform.fields))
 
     for name, value in new_methods.items():
         setattr(cls, name, value)

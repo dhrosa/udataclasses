@@ -54,3 +54,43 @@ def test_eq() -> None:
     """
     expected = dedent(expected).strip()
     assert out == expected
+
+
+def test_lt() -> None:
+    out = source.lt([Field("a"), Field("b")])
+    expected = """
+    def __lt__(self, other):
+        return (self._a, self._b,) < (other._a, other._b,)
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
+def test_le() -> None:
+    out = source.le([Field("a"), Field("b")])
+    expected = """
+    def __le__(self, other):
+        return (self._a, self._b,) <= (other._a, other._b,)
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
+def test_gt() -> None:
+    out = source.gt([Field("a"), Field("b")])
+    expected = """
+    def __gt__(self, other):
+        return (self._a, self._b,) > (other._a, other._b,)
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
+def test_ge() -> None:
+    out = source.ge([Field("a"), Field("b")])
+    expected = """
+    def __ge__(self, other):
+        return (self._a, self._b,) >= (other._a, other._b,)
+    """
+    expected = dedent(expected).strip()
+    assert out == expected

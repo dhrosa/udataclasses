@@ -80,3 +80,34 @@ def eq(fields: list[Field]) -> Lines:
     yield "return " + " and ".join(
         f"(self._{f.name} == other._{f.name})" for f in fields
     )
+
+
+def lt(fields: list[Field]) -> str:
+    return compare("__lt__", "<", fields)
+
+
+def le(fields: list[Field]) -> str:
+    return compare("__le__", "<=", fields)
+
+
+def gt(fields: list[Field]) -> str:
+    return compare("__gt__", ">", fields)
+
+
+def ge(fields: list[Field]) -> str:
+    return compare("__ge__", ">=", fields)
+
+
+# Internal helpers below
+
+
+def tuple_str(object_name: str, fields: list[Field]) -> str:
+    parts = (f"{object_name}._{f.name}," for f in fields)
+    return f"({' '.join(parts)})"
+
+
+@formatted
+def compare(method: str, operator: str, fields: list[Field]) -> Lines:
+    yield f"def {method}(self, other):"
+    yield indent
+    yield f"return {tuple_str('self', fields)} {operator} {tuple_str('other', fields)}"
