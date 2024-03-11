@@ -2,6 +2,7 @@ from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
 from . import source
+from .field import FrozenInstanceError
 from .transform_spec import TransformSpec
 
 T = TypeVar("T")
@@ -48,10 +49,13 @@ def _dataclass(
 ) -> type[T]:
     transform = TransformSpec(cls, init=init, repr=repr, eq=eq, order=order)
 
+    exec_globals: dict[str, Any] = {
+        "FrozenInstanceError": FrozenInstanceError,
+    }
     new_methods: dict[str, Any] = {}
 
     def add_method(code: str) -> None:
-        exec(code, None, new_methods)
+        exec(code, exec_globals, new_methods)
 
     if transform.init:
         add_method(source.init(transform.fields))
@@ -64,6 +68,10 @@ def _dataclass(
         add_method(source.le(transform.fields))
         add_method(source.gt(transform.fields))
         add_method(source.ge(transform.fields))
+
+    for field in transform.fields:
+        add_method(source.getter(field))
+        add_method(source.setter(field, frozen))
 
     for name, value in new_methods.items():
         setattr(cls, name, value)

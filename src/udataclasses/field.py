@@ -15,6 +15,10 @@ MISSING = MissingType()
 """Placeholder for fields with no default value."""
 
 
+class FrozenInstanceError(AttributeError):
+    pass
+
+
 def field(
     *,
     default: Any = MISSING,

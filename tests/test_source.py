@@ -36,6 +36,17 @@ def test_setter() -> None:
     assert out == expected
 
 
+def test_setter_frozen() -> None:
+    out = source.setter(Field("member"), frozen=True)
+    expected = """
+    @member.setter
+    def member(self, value):
+        raise FrozenInstanceError('member')
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
 def test_repr() -> None:
     out = source.repr([Field("a"), Field("b")])
     expected = """

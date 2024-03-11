@@ -1,12 +1,13 @@
 from .dataclass import dataclass
-from .field import Field, field
+from .field import Field, FrozenInstanceError, field
 
 VERSION = "0.0.0"
 """Read and written by the ``hatch version`` command."""
 
 __all__ = [
-    "dataclass",
-    "field",
     "Field",
     "VERSION",
+    "dataclass",
+    "field",
+    "FrozenInstanceError",
 ]

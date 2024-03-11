@@ -53,11 +53,14 @@ def getter(field: Field) -> Lines:
 
 
 @formatted
-def setter(field: Field) -> Lines:
+def setter(field: Field, frozen: bool = False) -> Lines:
     yield f"@{field.name}.setter"
     yield f"def {field.name}(self, value):"
     yield indent
-    yield f"self._{field.name} = value"
+    if frozen:
+        yield f"raise FrozenInstanceError('{field.name}')"
+    else:
+        yield f"self._{field.name} = value"
 
 
 @formatted
