@@ -1,12 +1,11 @@
 from textwrap import dedent
 
+from udataclasses import source
 from udataclasses.field import Field
-from udataclasses.source import Source
 
 
 def test_init() -> None:
-    source = Source()
-    out = source.format(source.init([Field("a"), Field("b")]))
+    out = source.init([Field("a"), Field("b")])
     expected = """
     def __init__(self, a, b):
         self._a = a
@@ -17,8 +16,7 @@ def test_init() -> None:
 
 
 def test_getter() -> None:
-    source = Source()
-    out = source.format(source.getter(Field("member")))
+    out = source.getter(Field("member"))
     expected = """
     @property
     def member(self):
@@ -29,8 +27,7 @@ def test_getter() -> None:
 
 
 def test_setter() -> None:
-    source = Source()
-    out = source.format(source.setter(Field("member")))
+    out = source.setter(Field("member"))
     expected = """
     @member.setter
     def member(self, value):
@@ -41,8 +38,7 @@ def test_setter() -> None:
 
 
 def test_repr() -> None:
-    source = Source()
-    out = source.format(source.repr([Field("a"), Field("b")]))
+    out = source.repr([Field("a"), Field("b")])
     expected = """
     def __repr__(self):
         return f'{self.__class__.__name__}(a={self._a!r}, b={self._b!r})'
@@ -52,8 +48,7 @@ def test_repr() -> None:
 
 
 def test_eq() -> None:
-    source = Source()
-    out = source.format(source.eq([Field("a"), Field("b")]))
+    out = source.eq([Field("a"), Field("b")])
     expected = """
     def __eq__(self, other):
         return (self._a == other._a) and (self._b == other._b)

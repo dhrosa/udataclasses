@@ -1,79 +1,80 @@
-from collections.abc import Iterator
-from typing import Any
+from collections.abc import Callable, Iterator
+from typing import ParamSpec, TypeAlias
 
 from .field import Field
 
 
-class Source:
-    """Generates source code for a dataclass."""
+class IndentType:
+    pass
 
-    indent_level: int = 0
-    """Current indentation level."""
 
-    class Indenter:
-        """Context manager for automatically indenting and dedenting code."""
+indent = IndentType()
 
-        def __init__(self, source: "Source") -> None:
-            self.source = source
+Lines: TypeAlias = Iterator[IndentType | str]
 
-        def __enter__(self) -> None:
-            self.source.indent_level += 1
+P = ParamSpec("P")
 
-        def __exit__(self, *args: Any) -> None:
-            self.source.indent_level -= 1
 
-    def indent(self) -> "Indenter":
-        return Source.Indenter(self)
+def formatted(f: Callable[P, Lines]) -> Callable[P, str]:
+    def inner(*args: P.args, **kwargs: P.kwargs) -> str:
+        parts: list[str] = []
+        indent_level = 0
+        for element in f(*args, **kwargs):
+            if isinstance(element, IndentType):
+                indent_level += 1
+                continue
+            parts.append(" " * (4 * indent_level) + element)
+        return "\n".join(parts)
 
-    def format(self, lines: Iterator[str]) -> str:
-        """Indent and join output from the methods below into a single string."""
+    return inner
 
-        def indented() -> Iterator[str]:
-            prefix = " " * 4
-            for line in lines:
-                yield (prefix * self.indent_level) + line
 
-        return "\n".join(indented())
+@formatted
+def init(fields: list[Field]) -> Lines:
+    """Generates the __init__ method."""
+    arg_names = ["self"] + [f.name for f in fields]
+    yield f"def __init__({', '.join(arg_names)}):"
+    yield indent
+    for field in fields:
+        yield f"self._{field.name} = {field.name}"
 
-    def init(self, fields: list[Field]) -> Iterator[str]:
-        """Generates the __init__ method."""
-        arg_names = ["self"] + [f.name for f in fields]
-        yield f"def __init__({', '.join(arg_names)}):"
-        with self.indent():
-            for field in fields:
-                yield f"self._{field.name} = {field.name}"
 
-    def getter(self, field: Field) -> Iterator[str]:
-        """Generates a field getter."""
-        yield "@property"
-        yield f"def {field.name}(self):"
-        with self.indent():
-            yield f"return self._{field.name}"
+@formatted
+def getter(field: Field) -> Lines:
+    yield "@property"
+    yield f"def {field.name}(self):"
+    yield indent
+    yield f"return self._{field.name}"
 
-    def setter(self, field: Field) -> Iterator[str]:
-        """Generates a field setter."""
-        yield f"@{field.name}.setter"
-        yield f"def {field.name}(self, value):"
-        with self.indent():
-            yield f"self._{field.name} = value"
 
-    def repr(self, fields: list[Field]) -> Iterator[str]:
-        """Generates the __repr__ method."""
-        yield "def __repr__(self):"
-        with self.indent():
-            yield (
-                "return f'{self.__class__.__name__}("
-                + ", ".join(f"{f.name}={{self._{f.name}!r}}" for f in fields)
-                + ")'"
-            )
+@formatted
+def setter(field: Field) -> Lines:
+    yield f"@{field.name}.setter"
+    yield f"def {field.name}(self, value):"
+    yield indent
+    yield f"self._{field.name} = value"
 
-    def eq(self, fields: list[Field]) -> Iterator[str]:
-        """Generates the __eq__ method."""
-        yield "def __eq__(self, other):"
-        with self.indent():
 
-            def parts() -> Iterator[str]:
-                for field in fields:
-                    yield f"(self._{field.name} == other._{field.name})"
+@formatted
+def repr(fields: list[Field]) -> Lines:
+    """Generates the __repr__ method."""
+    yield "def __repr__(self):"
+    yield indent
+    yield (
+        "return f'{self.__class__.__name__}("
+        + ", ".join(f"{f.name}={{self._{f.name}!r}}" for f in fields)
+        + ")'"
+    )
 
-            yield f"return {' and '.join(parts())}"
+
+@formatted
+def eq(fields: list[Field]) -> Lines:
+    """Generates the __eq__ method."""
+    yield "def __eq__(self, other):"
+    yield indent
+
+    def parts() -> Iterator[str]:
+        for field in fields:
+            yield f"(self._{field.name} == other._{field.name})"
+
+    yield f"return {' and '.join(parts())}"

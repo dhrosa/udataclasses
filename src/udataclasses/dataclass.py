@@ -1,9 +1,8 @@
 import typing
-from collections.abc import Iterator
 from typing import Any, TypeVar
 
+from . import source
 from .field import Field, field
-from .source import Source
 
 T = TypeVar("T")
 
@@ -13,12 +12,11 @@ def dataclass(
     cls: type[T], /, *, init: bool = True, repr: bool = True, eq: bool = True
 ) -> type[T]:
     transform = TransformSpec(cls, init=init, repr=repr, eq=eq)
-    source = Source()
 
     new_methods: dict[str, Any] = {}
 
-    def add_method(lines: Iterator[str]) -> None:
-        exec(source.format(lines), None, new_methods)
+    def add_method(code: str) -> None:
+        exec(code, None, new_methods)
 
     if transform.init:
         add_method(source.init(transform.fields))
