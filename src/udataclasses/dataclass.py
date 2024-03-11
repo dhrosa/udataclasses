@@ -47,7 +47,15 @@ def _dataclass(
     kw_only: bool = False,
     slots: bool = False,
 ) -> type[T]:
-    transform = TransformSpec(cls, init=init, repr=repr, eq=eq, order=order)
+    transform = TransformSpec(
+        cls,
+        init=init,
+        repr=repr,
+        eq=eq,
+        order=order,
+        unsafe_hash=unsafe_hash,
+        frozen=frozen,
+    )
 
     exec_globals: dict[str, Any] = {
         "FrozenInstanceError": FrozenInstanceError,
@@ -56,6 +64,10 @@ def _dataclass(
 
     def add_method(code: str) -> None:
         exec(code, exec_globals, new_methods)
+
+    for field in transform.fields:
+        add_method(source.getter(field))
+        add_method(source.setter(field, frozen))
 
     if transform.init:
         add_method(source.init(transform.fields))
@@ -69,9 +81,10 @@ def _dataclass(
         add_method(source.gt(transform.fields))
         add_method(source.ge(transform.fields))
 
-    for field in transform.fields:
-        add_method(source.getter(field))
-        add_method(source.setter(field, frozen))
+    if transform.hash is None:
+        new_methods["__hash__"] = None
+    if transform.hash:
+        add_method(source.hash(transform.fields))
 
     for name, value in new_methods.items():
         setattr(cls, name, value)

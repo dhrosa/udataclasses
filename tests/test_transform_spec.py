@@ -32,6 +32,18 @@ def test_repr() -> None:
     assert not TransformSpec(HasRepr, repr=True).repr
 
 
+def test_hash() -> None:
+    class Empty:
+        pass
+
+    assert TransformSpec(Empty, eq=True, frozen=True).hash is True
+    assert TransformSpec(Empty, eq=False, frozen=True).hash is False
+    assert TransformSpec(Empty, eq=False, frozen=False).hash is False
+    assert TransformSpec(Empty, eq=True, frozen=False).hash is None
+
+    assert TransformSpec(Empty, eq=False, frozen=False, unsafe_hash=True).hash is True
+
+
 def test_fields() -> None:
     class Class:
         missing_default = field()

@@ -101,6 +101,13 @@ def ge(fields: list[Field]) -> str:
     return compare("__ge__", ">=", fields)
 
 
+@formatted
+def hash(fields: list[Field]) -> Lines:
+    yield "def __hash__(self):"
+    yield indent
+    yield f"return hash({tuple_str('self', fields)})"
+
+
 # Internal helpers below
 
 

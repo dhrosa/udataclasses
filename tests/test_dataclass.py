@@ -59,3 +59,51 @@ def test_frozen() -> None:
         # Mypy rightfully warns that this assignment won't work on a frozen
         # dataclass.
         obj.a = 2  # type: ignore
+
+
+def test_implicit_hash() -> None:
+    @dataclass(eq=True, frozen=True)
+    class Class:
+        a: int = field()
+        b: int = field()
+
+    assert Class.__hash__ is not None
+    assert hash(Class(1, 2)) == hash(Class(1, 2))
+    assert hash(Class(1, 2)) != hash(Class(0, 2))
+    assert hash(Class(1, 2)) != hash(Class(1, 1))
+
+
+def test_disabled_hash() -> None:
+    @dataclass(eq=True, frozen=False)
+    class Class:
+        a: int = field()
+
+        def __hash__(self) -> int:
+            return 4
+
+    assert Class.__hash__ is None
+
+
+def test_inherited_hash() -> None:
+    @dataclass(eq=False)
+    class Class:
+        a: int = field()
+        b: int = field()
+
+        def __hash__(self) -> int:
+            return 4
+
+    assert Class.__hash__ is not None
+    assert hash(Class(1, 2)) == 4
+
+
+def test_unsafe_hash() -> None:
+    @dataclass(unsafe_hash=True)
+    class Class:
+        a: int = field()
+        b: int = field()
+
+    assert Class.__hash__ is not None
+    assert hash(Class(1, 2)) == hash(Class(1, 2))
+    assert hash(Class(1, 2)) != hash(Class(0, 2))
+    assert hash(Class(1, 2)) != hash(Class(1, 1))

@@ -105,3 +105,13 @@ def test_ge() -> None:
     """
     expected = dedent(expected).strip()
     assert out == expected
+
+
+def test_hash() -> None:
+    out = source.hash([Field("a"), Field("b")])
+    expected = """
+    def __hash__(self):
+        return hash((self._a, self._b,))
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
