@@ -8,6 +8,14 @@ else:
     from udataclasses import FrozenInstanceError, dataclass, field, is_dataclass
 
 
+def test_empty() -> None:
+    @dataclass
+    class Empty:
+        pass
+
+    Empty()
+
+
 def test_init_excluded_fields() -> None:
     @dataclass
     class Class:

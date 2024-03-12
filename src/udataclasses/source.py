@@ -45,6 +45,9 @@ def init(fields: list[Field]) -> Lines:
         args.append(arg)
     yield f"def __init__({', '.join(args)}):"
     yield indent
+    if not init_fields:
+        yield "pass"
+        return
     for f in init_fields:
         value = f.name
         if f.default_factory is not MISSING:

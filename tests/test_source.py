@@ -22,6 +22,16 @@ def test_init() -> None:
     assert out == expected
 
 
+def test_init_empty() -> None:
+    out = source.init([])
+    expected = """
+    def __init__(self):
+        pass
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
 def test_getter() -> None:
     out = source.getter(Field("member"))
     expected = """
@@ -127,6 +137,16 @@ def test_hash() -> None:
     expected = """
     def __hash__(self):
         return hash((self._a, self._b, self._c,))
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
+def test_hash_empty() -> None:
+    out = source.hash([])
+    expected = """
+    def __hash__(self):
+        return hash(())
     """
     expected = dedent(expected).strip()
     assert out == expected
