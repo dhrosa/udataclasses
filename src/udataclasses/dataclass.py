@@ -33,6 +33,11 @@ def dataclass(
     return wrapper(cls)
 
 
+def is_dataclass(obj: object) -> bool:
+    cls = obj if isinstance(obj, type) else type(obj)
+    return hasattr(cls, FIELDS)
+
+
 def _dataclass(
     cls: type[T],
     /,
@@ -56,6 +61,9 @@ def _dataclass(
 
     for name, value in make_methods(transform).items():
         setattr(cls, name, value)
+
+    # Store fields metadata
+    setattr(cls, FIELDS, {f.name: f for f in transform.fields})
     return cls
 
 
@@ -101,3 +109,7 @@ def make_methods(transform: TransformSpec) -> dict[str, Any]:
         add_method(source.hash(transform.fields))
 
     return methods
+
+
+FIELDS = "__dataclass_fields__"
+"""Class attribute used to store dataclass fields."""

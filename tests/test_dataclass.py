@@ -3,9 +3,9 @@ from typing import TYPE_CHECKING
 from pytest import raises
 
 if TYPE_CHECKING:
-    from dataclasses import FrozenInstanceError, dataclass, field
+    from dataclasses import FrozenInstanceError, dataclass, field, is_dataclass
 else:
-    from udataclasses import FrozenInstanceError, dataclass, field
+    from udataclasses import FrozenInstanceError, dataclass, field, is_dataclass
 
 
 def test_init_excluded_fields() -> None:
@@ -146,3 +146,15 @@ def test_unsafe_hash() -> None:
     assert hash(Class(1, 2)) == hash(Class(1, 2))
     assert hash(Class(1, 2)) != hash(Class(0, 2))
     assert hash(Class(1, 2)) != hash(Class(1, 1))
+
+
+def test_is_dataclass() -> None:
+    @dataclass
+    class DataClass:
+        a: int = 0
+
+    class NormalClass:
+        a: int = 0
+
+    assert is_dataclass(DataClass)
+    assert not is_dataclass(NormalClass)

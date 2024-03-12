@@ -1,4 +1,4 @@
-from .dataclass import dataclass
+from .dataclass import dataclass, is_dataclass
 from .field import Field, FrozenInstanceError, field
 
 VERSION = "0.0.0"
@@ -6,8 +6,9 @@ VERSION = "0.0.0"
 
 __all__ = [
     "Field",
+    "FrozenInstanceError",
     "VERSION",
     "dataclass",
     "field",
-    "FrozenInstanceError",
+    "is_dataclass",
 ]
