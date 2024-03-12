@@ -8,6 +8,19 @@ else:
     from udataclasses import FrozenInstanceError, dataclass, field
 
 
+def test_init_excluded_fields() -> None:
+    @dataclass
+    class Class:
+        a: int = field()
+        b: int = field(default=0, init=False)
+
+    # mypy rightfully warns that __init__ only takes one argument
+    with raises(TypeError):
+        Class(1, 2)  # type: ignore
+
+    Class(1)
+
+
 def test_repr() -> None:
     @dataclass
     class Class:

@@ -34,8 +34,9 @@ def formatted(f: Callable[P, Lines]) -> Callable[P, str]:
 @formatted
 def init(fields: list[Field]) -> Lines:
     """Generates the __init__ method."""
+    init_fields = [f for f in fields if f.init]
     args = ["self"]
-    for field in fields:
+    for field in init_fields:
         arg = field.name
         if field.default is not MISSING:
             arg += f"={field.default_value_name}"
@@ -44,7 +45,7 @@ def init(fields: list[Field]) -> Lines:
         args.append(arg)
     yield f"def __init__({', '.join(args)}):"
     yield indent
-    for f in fields:
+    for f in init_fields:
         value = f.name
         if f.default_factory is not MISSING:
             value = f"{f.default_value_name}() if {f.name} is FACTORY_SENTINEL else {f.name}"

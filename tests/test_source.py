@@ -9,6 +9,7 @@ def test_init() -> None:
             Field("a"),
             Field("b", default=2),
             Field("c", default_factory=lambda: 3),
+            Field("d", init=False),
         ]
     )
     expected = """
