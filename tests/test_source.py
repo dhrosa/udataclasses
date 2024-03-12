@@ -116,10 +116,17 @@ def test_ge() -> None:
 
 
 def test_hash() -> None:
-    out = source.hash([Field("a"), Field("b")])
+    out = source.hash(
+        [
+            Field("a"),
+            Field("b"),
+            Field("c", compare=False, hash=True),
+            Field("d", compare=False),
+        ],
+    )
     expected = """
     def __hash__(self):
-        return hash((self._a, self._b,))
+        return hash((self._a, self._b, self._c,))
     """
     expected = dedent(expected).strip()
     assert out == expected

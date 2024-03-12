@@ -105,9 +105,10 @@ def ge(fields: list[Field]) -> str:
 
 @formatted
 def hash(fields: list[Field]) -> Lines:
+    hash_fields = [f for f in fields if f.hash]
     yield "def __hash__(self):"
     yield indent
-    yield f"return hash({tuple_str('self', fields)})"
+    yield f"return hash({tuple_str('self', hash_fields)})"
 
 
 # Internal helpers below

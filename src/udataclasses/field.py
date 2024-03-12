@@ -33,10 +33,8 @@ def field(
     default_factory: Callable[[], Any] | MissingType = MISSING,
     init: bool = True,
     repr: bool = True,
-    hash: Any = None,
+    hash: bool | None = None,
     compare: bool = True,
-    metadata: Any = None,
-    kw_only: Any = MISSING,
 ) -> "Field":
     """Function for explicitly declaring a field."""
     return Field(
@@ -44,6 +42,7 @@ def field(
         default_factory=default_factory,
         init=init,
         repr=repr,
+        hash=hash,
         compare=compare,
     )
 
@@ -59,6 +58,7 @@ class Field:
     default_factory: Callable[[], Any] | MissingType
     init: bool
     repr: bool
+    hash: bool
     compare: bool
 
     def __init__(
@@ -68,6 +68,7 @@ class Field:
         default_factory: Callable[[], Any] | MissingType = MISSING,
         init: bool = True,
         repr: bool = True,
+        hash: bool | None = None,
         compare: bool = True,
     ) -> None:
         self.name = name
@@ -75,6 +76,9 @@ class Field:
         self.default_factory = default_factory
         self.init = init
         self.repr = repr
+        if hash is None:
+            hash = compare
+        self.hash = hash
         self.compare = compare
 
     def __eq__(self, other: object) -> bool:
