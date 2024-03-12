@@ -78,7 +78,7 @@ def repr(fields: list[Field]) -> Lines:
     yield indent
     yield (
         "return f'{self.__class__.__name__}("
-        + ", ".join(f"{f.name}={{self.{f._name}!r}}" for f in fields)
+        + ", ".join(f"{f.name}={{self.{f._name}!r}}" for f in fields if f.repr)
         + ")'"
     )
 

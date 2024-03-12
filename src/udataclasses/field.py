@@ -39,7 +39,7 @@ def field(
     kw_only: Any = MISSING,
 ) -> "Field":
     """Function for explicitly declaring a field."""
-    return Field(default=default, default_factory=default_factory, init=init)
+    return Field(default=default, default_factory=default_factory, init=init, repr=repr)
 
 
 class Field:
@@ -52,6 +52,7 @@ class Field:
     default: Any
     default_factory: Callable[[], Any] | MissingType
     init: bool
+    repr: bool
 
     def __init__(
         self,
@@ -59,11 +60,13 @@ class Field:
         default: Any = MISSING,
         default_factory: Callable[[], Any] | MissingType = MISSING,
         init: bool = True,
+        repr: bool = True,
     ) -> None:
         self.name = name
         self.default = default
         self.default_factory = default_factory
         self.init = init
+        self.repr = repr
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Field):

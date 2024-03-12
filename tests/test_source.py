@@ -56,7 +56,7 @@ def test_setter_frozen() -> None:
 
 
 def test_repr() -> None:
-    out = source.repr([Field("a"), Field("b")])
+    out = source.repr([Field("a"), Field("b"), Field("c", repr=False)])
     expected = """
     def __repr__(self):
         return f'{self.__class__.__name__}(a={self._a!r}, b={self._b!r})'

@@ -26,8 +26,9 @@ def test_repr() -> None:
     class Class:
         a: int = field()
         b: int = field()
+        c: int = field(repr=False)
 
-    assert repr(Class(1, 2)) == "Class(a=1, b=2)"
+    assert repr(Class(1, 2, 3)) == "Class(a=1, b=2)"
 
 
 def test_default() -> None:
