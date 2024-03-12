@@ -5,10 +5,12 @@ from .field import MISSING, Field
 
 
 class IndentType:
-    pass
+    def __init__(self, increment: int):
+        self.increment = increment
 
 
-indent = IndentType()
+indent = IndentType(+1)
+dedent = IndentType(-1)
 
 Lines: TypeAlias = Iterator[IndentType | str]
 
@@ -21,7 +23,7 @@ def formatted(f: Callable[P, Lines]) -> Callable[P, str]:
         indent_level = 0
         for element in f(*args, **kwargs):
             if isinstance(element, IndentType):
-                indent_level += 1
+                indent_level += element.increment
                 continue
             parts.append(" " * (4 * indent_level) + element)
         return "\n".join(parts)
@@ -37,11 +39,16 @@ def init(fields: list[Field]) -> Lines:
         arg = field.name
         if field.default is not MISSING:
             arg += f"={field.default_value_name}"
+        if field.default_factory is not MISSING:
+            arg += "=FACTORY_SENTINEL"
         args.append(arg)
     yield f"def __init__({', '.join(args)}):"
     yield indent
-    for field in fields:
-        yield f"self.{field._name} = {field.name}"
+    for f in fields:
+        value = f.name
+        if f.default_factory is not MISSING:
+            value = f"{f.default_value_name}() if {f.name} is FACTORY_SENTINEL else {f.name}"
+        yield f"self.{f._name} = {value}"
 
 
 @formatted

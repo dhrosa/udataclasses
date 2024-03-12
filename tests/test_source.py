@@ -4,11 +4,18 @@ from udataclasses import Field, source
 
 
 def test_init() -> None:
-    out = source.init([Field("a"), Field("b", default=2)])
+    out = source.init(
+        [
+            Field("a"),
+            Field("b", default=2),
+            Field("c", default_factory=lambda: 3),
+        ]
+    )
     expected = """
-    def __init__(self, a, b=__dataclass_default_b):
+    def __init__(self, a, b=__dataclass_default_b, c=FACTORY_SENTINEL):
         self._a = a
         self._b = b
+        self._c = __dataclass_default_c() if c is FACTORY_SENTINEL else c
     """
     expected = dedent(expected).strip()
     assert out == expected

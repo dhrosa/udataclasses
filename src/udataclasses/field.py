@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from typing import Any
 
 
@@ -19,10 +20,17 @@ class FrozenInstanceError(AttributeError):
     pass
 
 
+class FactorySentinelType:
+    pass
+
+
+FACTORY_SENTINEL = FactorySentinelType
+
+
 def field(
     *,
     default: Any = MISSING,
-    default_factory: Any = MISSING,
+    default_factory: Callable[[], Any] | MissingType = MISSING,
     init: bool = True,
     repr: bool = True,
     hash: Any = None,
@@ -31,7 +39,7 @@ def field(
     kw_only: Any = MISSING,
 ) -> "Field":
     """Function for explicitly declaring a field."""
-    return Field(default=default)
+    return Field(default=default, default_factory=default_factory)
 
 
 class Field:
@@ -42,12 +50,18 @@ class Field:
 
     name: str
     default: Any
+    default_factory: Callable[[], Any] | MissingType
 
     def __init__(
-        self, name: str = "<UNSET>", default: Any = MISSING, init: bool = True
+        self,
+        name: str = "<UNSET>",
+        default: Any = MISSING,
+        default_factory: Callable[[], Any] | MissingType = MISSING,
+        init: bool = True,
     ) -> None:
         self.name = name
         self.default = default
+        self.default_factory = default_factory
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Field):

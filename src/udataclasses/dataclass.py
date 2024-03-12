@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
 from . import source
-from .field import MISSING, FrozenInstanceError
+from .field import FACTORY_SENTINEL, MISSING, FrozenInstanceError
 from .transform_spec import TransformSpec
 
 T = TypeVar("T")
@@ -62,11 +62,13 @@ def _dataclass(
 def make_global_bindings(transform: TransformSpec) -> dict[str, Any]:
     bindings: dict[str, Any] = {
         "FrozenInstanceError": FrozenInstanceError,
+        "FACTORY_SENTINEL": FACTORY_SENTINEL,
     }
     for field in transform.fields:
-        if field.default is MISSING:
-            continue
-        bindings[field.default_value_name] = field.default
+        if field.default is not MISSING:
+            bindings[field.default_value_name] = field.default
+        if field.default_factory is not MISSING:
+            bindings[field.default_value_name] = field.default_factory
     return bindings
 
 

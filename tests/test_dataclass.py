@@ -27,6 +27,19 @@ def test_default() -> None:
     assert Class(1, 2) == Class(1, 2)
 
 
+def test_default_factory() -> None:
+    @dataclass
+    class Class:
+        a: list[int] = field(default_factory=lambda: [])
+
+    obj = Class()
+    obj.a.append(1)
+    assert obj.a == [1]
+
+    obj = Class()
+    assert obj.a == []
+
+
 def test_properties() -> None:
     @dataclass
     class Class:
