@@ -3,9 +3,23 @@ from typing import TYPE_CHECKING
 from pytest import raises
 
 if TYPE_CHECKING:
-    from dataclasses import FrozenInstanceError, dataclass, field, is_dataclass
+    from dataclasses import (
+        MISSING,
+        FrozenInstanceError,
+        dataclass,
+        field,
+        fields,
+        is_dataclass,
+    )
 else:
-    from udataclasses import FrozenInstanceError, dataclass, field, is_dataclass
+    from udataclasses import (
+        MISSING,
+        FrozenInstanceError,
+        dataclass,
+        field,
+        fields,
+        is_dataclass,
+    )
 
 
 def test_empty() -> None:
@@ -166,3 +180,24 @@ def test_is_dataclass() -> None:
 
     assert is_dataclass(DataClass)
     assert not is_dataclass(NormalClass)
+
+
+def test_fields() -> None:
+    @dataclass
+    class Class:
+        a: int = field()
+        b: int = field(default=1)
+
+    class_fields = fields(Class)
+    assert len(class_fields) == 2
+    assert class_fields[0].name == "a"
+    assert class_fields[0].default == MISSING
+    assert class_fields[1].name == "b"
+    assert class_fields[1].default == 1
+
+    instance_fields = fields(Class(1, 2))
+    assert len(instance_fields) == 2
+    assert instance_fields[0].name == "a"
+    assert instance_fields[0].default == MISSING
+    assert instance_fields[1].name == "b"
+    assert instance_fields[1].default == 1

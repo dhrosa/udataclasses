@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
 from . import source
-from .field import FACTORY_SENTINEL, MISSING, FrozenInstanceError
+from .field import FACTORY_SENTINEL, MISSING, Field, FrozenInstanceError
 from .transform_spec import TransformSpec
 
 T = TypeVar("T")
@@ -36,6 +36,11 @@ def dataclass(
 def is_dataclass(obj: object) -> bool:
     cls = obj if isinstance(obj, type) else type(obj)
     return hasattr(cls, FIELDS)
+
+
+def fields(obj: object) -> tuple[Field, ...]:
+    cls = obj if isinstance(obj, type) else type(obj)
+    return tuple(getattr(cls, FIELDS).values())
 
 
 def _dataclass(
