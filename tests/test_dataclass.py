@@ -71,9 +71,10 @@ def test_eq() -> None:
     class Class:
         a: int = field()
         b: int = field()
+        c: int = field(compare=False)
 
-    assert Class(1, 2) == Class(1, 2)
-    assert Class(1, 2) != Class(1, 1)
+    assert Class(1, 2, 3) == Class(1, 2, 0)
+    assert Class(1, 2, 3) != Class(1, 1, 3)
 
 
 def test_compare() -> None:
@@ -81,9 +82,10 @@ def test_compare() -> None:
     class Class:
         a: int = field()
         b: int = field()
+        c: int = field(compare=False)
 
-    assert Class(1, 2) <= Class(1, 2)
-    assert not (Class(1, 2) < Class(1, 2))
+    assert Class(1, 2, 3) <= Class(1, 2, 0)
+    assert not (Class(1, 2, 3) < Class(1, 2, 0))
 
 
 def test_frozen() -> None:

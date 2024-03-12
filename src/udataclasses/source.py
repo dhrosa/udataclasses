@@ -83,14 +83,8 @@ def repr(fields: list[Field]) -> Lines:
     )
 
 
-@formatted
-def eq(fields: list[Field]) -> Lines:
-    """Generates the __eq__ method."""
-    yield "def __eq__(self, other):"
-    yield indent
-    yield "return " + " and ".join(
-        f"(self._{f.name} == other._{f.name})" for f in fields
-    )
+def eq(fields: list[Field]) -> str:
+    return compare("__eq__", "==", fields)
 
 
 def lt(fields: list[Field]) -> str:
@@ -126,6 +120,9 @@ def tuple_str(object_name: str, fields: list[Field]) -> str:
 
 @formatted
 def compare(method: str, operator: str, fields: list[Field]) -> Lines:
+    compare_fields = [f for f in fields if f.compare]
+    left = tuple_str("self", compare_fields)
+    right = tuple_str("other", compare_fields)
     yield f"def {method}(self, other):"
     yield indent
-    yield f"return {tuple_str('self', fields)} {operator} {tuple_str('other', fields)}"
+    yield f"return {left} {operator} {right}"

@@ -66,17 +66,17 @@ def test_repr() -> None:
 
 
 def test_eq() -> None:
-    out = source.eq([Field("a"), Field("b")])
+    out = source.eq([Field("a"), Field("b"), Field("c", compare=False)])
     expected = """
     def __eq__(self, other):
-        return (self._a == other._a) and (self._b == other._b)
+        return (self._a, self._b,) == (other._a, other._b,)
     """
     expected = dedent(expected).strip()
     assert out == expected
 
 
 def test_lt() -> None:
-    out = source.lt([Field("a"), Field("b")])
+    out = source.lt([Field("a"), Field("b"), Field("c", compare=False)])
     expected = """
     def __lt__(self, other):
         return (self._a, self._b,) < (other._a, other._b,)
@@ -86,7 +86,7 @@ def test_lt() -> None:
 
 
 def test_le() -> None:
-    out = source.le([Field("a"), Field("b")])
+    out = source.le([Field("a"), Field("b"), Field("c", compare=False)])
     expected = """
     def __le__(self, other):
         return (self._a, self._b,) <= (other._a, other._b,)
@@ -96,7 +96,7 @@ def test_le() -> None:
 
 
 def test_gt() -> None:
-    out = source.gt([Field("a"), Field("b")])
+    out = source.gt([Field("a"), Field("b"), Field("c", compare=False)])
     expected = """
     def __gt__(self, other):
         return (self._a, self._b,) > (other._a, other._b,)
@@ -106,7 +106,7 @@ def test_gt() -> None:
 
 
 def test_ge() -> None:
-    out = source.ge([Field("a"), Field("b")])
+    out = source.ge([Field("a"), Field("b"), Field("c", compare=False)])
     expected = """
     def __ge__(self, other):
         return (self._a, self._b,) >= (other._a, other._b,)
