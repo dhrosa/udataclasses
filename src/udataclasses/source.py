@@ -1,41 +1,10 @@
-from collections.abc import Callable, Iterator
-from typing import ParamSpec, TypeAlias
-
 from .field import MISSING, Field
 
 
-class IndentType:
-    def __init__(self, increment: int):
-        self.increment = increment
-
-
-indent = IndentType(+1)
-dedent = IndentType(-1)
-
-Lines: TypeAlias = Iterator[IndentType | str]
-
-P = ParamSpec("P")
-
-
-def formatted(f: Callable[P, Lines]) -> Callable[P, str]:
-    def inner(*args: P.args, **kwargs: P.kwargs) -> str:
-        parts: list[str] = []
-        indent_level = 0
-        for element in f(*args, **kwargs):
-            if isinstance(element, IndentType):
-                indent_level += element.increment
-                continue
-            parts.append(" " * (4 * indent_level) + element)
-        return "\n".join(parts)
-
-    return inner
-
-
-@formatted
-def init(fields: list[Field]) -> Lines:
+def init(fields: list[Field]) -> str:
     """Generates the __init__ method."""
     init_fields = [f for f in fields if f.init]
-    args = ["self"]
+    args: list[str] = []
     for field in init_fields:
         arg = field.name
         if field.default is not MISSING:
@@ -43,46 +12,53 @@ def init(fields: list[Field]) -> Lines:
         if field.default_factory is not MISSING:
             arg += "=FACTORY_SENTINEL"
         args.append(arg)
-    yield f"def __init__({', '.join(args)}):"
-    yield indent
-    if not init_fields:
-        yield "pass"
-        return
+
+    body: list[str] = []
     for f in init_fields:
         value = f.name
         if f.default_factory is not MISSING:
             value = f"{f.default_value_name}() if {f.name} is FACTORY_SENTINEL else {f.name}"
-        yield f"self.{f._name} = {value}"
+        body.append(f"self.{f._name} = {value}")
+
+    return method(
+        name="__init__",
+        non_self_args=args,
+        body=body or "pass",
+    )
 
 
-@formatted
-def getter(field: Field) -> Lines:
-    yield "@property"
-    yield f"def {field.name}(self):"
-    yield indent
-    yield f"return self.{field._name}"
+def getter(field: Field) -> str:
+    """Generates a field getter."""
+    return method(
+        decorator="@property",
+        name=field.name,
+        body=f"return self.{field._name}",
+    )
 
 
-@formatted
-def setter(field: Field, frozen: bool = False) -> Lines:
-    yield f"@{field.name}.setter"
-    yield f"def {field.name}(self, value):"
-    yield indent
-    if frozen:
-        yield f"raise FrozenInstanceError('{field.name}')"
-    else:
-        yield f"self.{field._name} = value"
+def setter(field: Field, frozen: bool = False) -> str:
+    """Generates a field setter."""
+    return method(
+        decorator=f"@{field.name}.setter",
+        name=field.name,
+        non_self_args=["value"],
+        body=(
+            f"raise FrozenInstanceError('{field.name}')"
+            if frozen
+            else f"self.{field._name} = value"
+        ),
+    )
 
 
-@formatted
-def repr(fields: list[Field]) -> Lines:
+def repr(fields: list[Field]) -> str:
     """Generates the __repr__ method."""
-    yield "def __repr__(self):"
-    yield indent
-    yield (
-        "return f'{self.__class__.__name__}("
-        + ", ".join(f"{f.name}={{self.{f._name}!r}}" for f in fields if f.repr)
-        + ")'"
+    return method(
+        name="__repr__",
+        body=(
+            "return f'{self.__class__.__name__}("
+            + ", ".join(f"{f.name}={{self.{f._name}!r}}" for f in fields if f.repr)
+            + ")'"
+        ),
     )
 
 
@@ -106,27 +82,49 @@ def ge(fields: list[Field]) -> str:
     return compare("__ge__", ">=", fields)
 
 
-@formatted
-def hash(fields: list[Field]) -> Lines:
+def hash(fields: list[Field]) -> str:
     hash_fields = [f for f in fields if f.hash]
-    yield "def __hash__(self):"
-    yield indent
-    yield f"return hash({tuple_str('self', hash_fields)})"
+    return method(
+        name="__hash__", body=f"return hash({tuple_str('self', hash_fields)})"
+    )
 
 
 # Internal helpers below
 
 
+def method(
+    *,
+    name: str,
+    body: str | list[str],
+    decorator: str | None = None,
+    non_self_args: list[str] = [],
+) -> str:
+    """Generates code for a Python method."""
+    lines: list[str] = []
+    if decorator is not None:
+        lines.append(decorator)
+    lines.append(f"def {name}({', '.join(['self'] + non_self_args)}):")
+    if isinstance(body, str):
+        body = [body]
+    indent = " " * 4
+    for line in body:
+        lines.append(indent + line)
+    return "\n".join(lines)
+
+
 def tuple_str(object_name: str, fields: list[Field]) -> str:
+    """An expressing that represents a dataclass instance as a tuple of its fields."""
     parts = (f"{object_name}._{f.name}," for f in fields)
     return f"({' '.join(parts)})"
 
 
-@formatted
-def compare(method: str, operator: str, fields: list[Field]) -> Lines:
+def compare(name: str, operator: str, fields: list[Field]) -> str:
+    """Generates a comparison operator method."""
     compare_fields = [f for f in fields if f.compare]
     left = tuple_str("self", compare_fields)
     right = tuple_str("other", compare_fields)
-    yield f"def {method}(self, other):"
-    yield indent
-    yield f"return {left} {operator} {right}"
+    return method(
+        name=name,
+        non_self_args=["other"],
+        body=f"return {left} {operator} {right}",
+    )
