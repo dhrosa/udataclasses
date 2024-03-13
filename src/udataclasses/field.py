@@ -1,5 +1,9 @@
-from collections.abc import Callable
-from typing import Any
+from .default_factory import DefaultFactory
+
+try:
+    from typing import Any
+except NameError:
+    pass
 
 
 class MissingType:
@@ -21,12 +25,13 @@ class FrozenInstanceError(AttributeError):
 
 
 FACTORY_SENTINEL = object()
+"""Placeholder used in generated __init__ parameters for fields with a default_factory."""
 
 
 def field(
     *,
     default: Any = MISSING,
-    default_factory: Callable[[], Any] | MissingType = MISSING,
+    default_factory: DefaultFactory | MissingType = MISSING,
     init: bool = True,
     repr: bool = True,
     hash: bool | None = None,
@@ -51,7 +56,7 @@ class Field:
 
     name: str
     default: Any
-    default_factory: Callable[[], Any] | MissingType
+    default_factory: DefaultFactory | MissingType
     init: bool
     repr: bool
     hash: bool
@@ -61,7 +66,7 @@ class Field:
         self,
         name: str = "<UNSET>",
         default: Any = MISSING,
-        default_factory: Callable[[], Any] | MissingType = MISSING,
+        default_factory: DefaultFactory | MissingType = MISSING,
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,
