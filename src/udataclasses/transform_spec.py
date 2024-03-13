@@ -1,8 +1,4 @@
-from typing import TypeVar
-
 from .field import Field
-
-T = TypeVar("T")
 
 
 class TransformSpec:
@@ -23,7 +19,7 @@ class TransformSpec:
 
     def __init__(
         self,
-        cls: type[T],
+        cls: type,
         *,
         init: bool = False,
         repr: bool = False,
