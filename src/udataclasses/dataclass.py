@@ -1,22 +1,11 @@
 from collections.abc import Callable
-from typing import Any, TypeVar, overload
+from typing import Any, TypeVar
 
 from . import source
 from .field import FACTORY_SENTINEL, MISSING, Field, FrozenInstanceError
 from .transform_spec import TransformSpec
 
 T = TypeVar("T")
-
-
-# No argument and no parenthesis overload
-@overload
-def dataclass(cls: None, /) -> Callable[[type[T]], type[T]]:
-    pass
-
-
-@overload
-def dataclass(cls: type[T], /) -> type[T]:
-    pass
 
 
 def dataclass(
