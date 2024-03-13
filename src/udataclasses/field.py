@@ -20,11 +20,7 @@ class FrozenInstanceError(AttributeError):
     pass
 
 
-class FactorySentinelType:
-    pass
-
-
-FACTORY_SENTINEL = FactorySentinelType
+FACTORY_SENTINEL = object()
 
 
 def field(
