@@ -1,7 +1,8 @@
-from .default_factory import DefaultFactory
-
 try:
-    from typing import Any
+    from collections.abc import Callable
+    from typing import Any, TypeAlias
+
+    DefaultFactory: TypeAlias = Callable[[], Any]
 except ImportError:
     pass
 
