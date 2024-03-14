@@ -2,7 +2,7 @@ from .default_factory import DefaultFactory
 
 try:
     from typing import Any
-except NameError:
+except ImportError:
     pass
 
 
