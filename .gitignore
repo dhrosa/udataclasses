@@ -1,3 +1,4 @@
 dist/
 *undo-tree*
 *__pycache__*
+docs/_build

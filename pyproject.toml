@@ -44,6 +44,9 @@ all = [
 [tool.hatch.envs.test]
 dependencies = ["pytest"]
 
+[tool.hatch.envs.docs]
+dependencies = ["sphinx", "python-docs-theme"]
+
 [tool.hatch.envs.test.scripts]
 all = ["pytest"]
 
