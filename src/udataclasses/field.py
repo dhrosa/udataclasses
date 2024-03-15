@@ -18,10 +18,12 @@ class MissingType:
 
 
 MISSING = MissingType()
-"""Placeholder for fields with no default value."""
+"""Sentinel default value for fields without a default value."""
 
 
 class FrozenInstanceError(AttributeError):
+    """Exception raised when attempting to mutate a frozen dataclass instance."""
+
     pass
 
 
@@ -56,6 +58,7 @@ class Field:
     """
 
     name: str
+    type: type = object
     default: Any
     default_factory: DefaultFactory | MissingType
     init: bool

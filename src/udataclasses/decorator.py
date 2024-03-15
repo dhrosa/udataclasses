@@ -17,6 +17,8 @@ FIELDS = "__dataclass_fields__"
 def dataclass(
     cls: type[T] | None = None, **kwargs: Any
 ) -> type[T] | Callable[[type[T]], type[T]]:
+    """Decorator to transform a normal class into a dataclass."""
+
     def wrapper(cls: type[T]) -> type[T]:
         return _dataclass(cls, **kwargs)
 
