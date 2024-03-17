@@ -45,7 +45,7 @@ all = [
 dependencies = ["pytest"]
 
 [tool.hatch.envs.docs]
-dependencies = ["sphinx", "sphinx-rtd-theme"]
+dependencies = ["sphinx", "sphinx-rtd-theme", "sphinx-design"]
 
 [tool.hatch.envs.docs.scripts]
 sphinx = "make -C docs html"

@@ -20,16 +20,14 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    'sphinx_design',
 ]
 
 autodoc_member_order = "bysource"
-
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
-
 viewcode_line_numbers = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']

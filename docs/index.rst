@@ -4,6 +4,7 @@ Welcome to udataclasses's documentation!
 .. toctree::
    :caption: Contents:
 
+   diffs
    api
 
 
