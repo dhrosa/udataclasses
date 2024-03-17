@@ -1,8 +1,11 @@
-Differences from standard :py:mod:`dataclasses`
-================================================
+.. |dataclasses| replace:: :py:mod:`dataclasses`
+.. |udataclasses| replace:: :py:mod:`udataclasses`
 
-Fields with only a type annotation are dropped
-----------------------------------------------
+Differences between |udataclasses| and |dataclasses|
+====================================================
+
+Field attributes must have values
+---------------------------------
 
 In MicroPython and CircuitPython, fhe following code does **not** work:
 
@@ -55,22 +58,36 @@ indicate that the field has no default value:
       dict_keys(['__module__', 'b', '__qualname__'])
 
    The code knows about the attribute ``b``, but there is no mention of ``a``.
-   Because of this, ``udataclasses`` fields have to be assigned a value in order
+   Because of this, |udataclasses| fields have to be assigned a value in order
    for us to be able to detect the field.
 
 
-:py:attr:`udataclasses.Field.type` does not have the correct field type
------------------------------------------------------------------------
+|field_type| has the wrong value
+--------------------------------
 
 MicroPython does not store type annotations anywhere, so there is no way for
-``udataclasses`` to know the correct type for a field. This attribute is
+|udataclasses| to know the correct type for a field. Instead, |field_type| is
 hardcoded to :py:class:`object`.
 
-Missing features
-----------------
+.. |field_type| replace:: :py:attr:`Field.type <udataclasses.Field.type>`
 
-We don't currently support every feature that the standard :py:mod:`dataclasses`
-has. These are a work in progress. We aim to have feature parity with at least
-Python 3.9's version of the module where we can. See
+`Mypy`_ does not understand |decorator|
+---------------------------------------
+
+There is ongoing work to get Mypy to recognize that classes decorated using
+|udataclasses| should type-check in the same way that |dataclasses| would.
+
+See https://github.com/dhrosa/udataclasses/issues/10 for progress on this.
+
+.. _mypy: https://mypy-lang.org/
+.. |decorator| replace:: :py:func:`@udataclasses.dataclass <udataclasses.dataclass>`
+
+
+Missing features from |dataclasses|
+-----------------------------------
+
+We don't currently support every feature that the standard |dataclasses| has.
+These are a work in progress. We aim to have feature parity with at least Python
+3.9's version of |dataclasses| where possible. See
 https://github.com/dhrosa/udataclasses/issues for progress on these missing
 features.
