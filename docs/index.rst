@@ -3,6 +3,7 @@ Welcome to udataclasses's documentation!
 
 .. toctree::
    :caption: Contents:
+   :maxdepth: 2
 
    diffs
    api
