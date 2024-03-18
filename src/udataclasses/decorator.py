@@ -1,5 +1,6 @@
 from . import source
-from .field import FACTORY_SENTINEL, MISSING, FrozenInstanceError
+from .constants import FACTORY_SENTINEL, FIELDS_NAME, MISSING
+from .field import FrozenInstanceError
 from .transform_spec import TransformSpec
 
 try:
@@ -9,9 +10,6 @@ try:
     T = TypeVar("T")
 except ImportError:
     pass
-
-FIELDS = "__dataclass_fields__"
-"""Class attribute used to store dataclass fields."""
 
 
 def dataclass(
@@ -54,7 +52,7 @@ def _dataclass(
         setattr(cls, name, value)
 
     # Store fields metadata
-    setattr(cls, FIELDS, {f.name: f for f in transform.fields})
+    setattr(cls, FIELDS_NAME, {f.name: f for f in transform.fields})
     return cls
 
 

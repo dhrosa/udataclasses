@@ -1,3 +1,5 @@
+from .constants import MISSING, MissingType
+
 try:
     from collections.abc import Callable
     from typing import Any, TypeAlias
@@ -7,28 +9,10 @@ except ImportError:
     pass
 
 
-class MissingType:
-    """Singleton type for MISSING value."""
-
-    def __repr__(self) -> str:
-        return "MISSING"
-
-    def __eq__(self, other: object) -> bool:
-        return other is self
-
-
-MISSING = MissingType()
-"""Sentinel default value for fields without a default value."""
-
-
 class FrozenInstanceError(AttributeError):
     """Exception raised when attempting to mutate a frozen dataclass instance."""
 
     pass
-
-
-FACTORY_SENTINEL = object()
-"""Placeholder used in generated __init__ parameters for fields with a default_factory."""
 
 
 def field(

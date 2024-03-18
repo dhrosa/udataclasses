@@ -1,4 +1,5 @@
-from .field import MISSING, Field
+from .constants import MISSING
+from .field import Field
 
 
 def init(fields: list[Field]) -> str:

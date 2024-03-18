@@ -1,4 +1,5 @@
-from udataclasses.field import MISSING, Field, field
+from udataclasses.constants import MISSING
+from udataclasses.field import Field, field
 from udataclasses.transform_spec import TransformSpec
 
 
