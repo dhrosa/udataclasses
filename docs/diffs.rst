@@ -71,18 +71,6 @@ hardcoded to :py:class:`object`.
 
 .. |field_type| replace:: :py:attr:`Field.type <udataclasses.Field.type>`
 
-`Mypy`_ does not understand |decorator|
----------------------------------------
-
-There is ongoing work to get Mypy to recognize that classes decorated using
-|udataclasses| should type-check in the same way that |dataclasses| would.
-
-See https://github.com/dhrosa/udataclasses/issues/10 for progress on this.
-
-.. _mypy: https://mypy-lang.org/
-.. |decorator| replace:: :py:func:`@udataclasses.dataclass <udataclasses.dataclass>`
-
-
 Missing features from |dataclasses|
 -----------------------------------
 

@@ -1,25 +1,13 @@
-from typing import TYPE_CHECKING
-
 from pytest import raises
 
-if TYPE_CHECKING:
-    from dataclasses import (
-        MISSING,
-        FrozenInstanceError,
-        dataclass,
-        field,
-        fields,
-        is_dataclass,
-    )
-else:
-    from udataclasses import (
-        MISSING,
-        FrozenInstanceError,
-        dataclass,
-        field,
-        fields,
-        is_dataclass,
-    )
+from udataclasses import (
+    MISSING,
+    FrozenInstanceError,
+    dataclass,
+    field,
+    fields,
+    is_dataclass,
+)
 
 
 def test_empty() -> None:
