@@ -63,7 +63,7 @@ class Field:
     default_factory: DefaultFactory | MissingType
     init: bool
     repr: bool
-    hash: bool
+    hash: bool | None
     compare: bool
 
     def __init__(
@@ -81,8 +81,6 @@ class Field:
         self.default_factory = default_factory
         self.init = init
         self.repr = repr
-        if hash is None:
-            hash = compare
         self.hash = hash
         self.compare = compare
 
@@ -102,3 +100,10 @@ class Field:
     def default_value_name(self) -> str:
         """Name to use for storing the default value as a global."""
         return f"__dataclass_default_{self.name}"
+
+    @property
+    def contributes_to_hash(self) -> bool:
+        """True if this field should contributeto generated __hash__() method."""
+        if self.hash is None:
+            return self.compare
+        return self.hash

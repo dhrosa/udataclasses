@@ -83,7 +83,7 @@ def ge(fields: list[Field]) -> str:
 
 
 def hash(fields: list[Field]) -> str:
-    hash_fields = [f for f in fields if f.hash]
+    hash_fields = [f for f in fields if f.contributes_to_hash]
     return method(
         name="__hash__", body=f"return hash({tuple_str('self', hash_fields)})"
     )
