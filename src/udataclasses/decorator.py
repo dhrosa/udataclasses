@@ -81,6 +81,7 @@ def make_methods(transform: TransformSpec) -> dict[str, Any]:
     for field in transform.fields:
         add_method(source.getter(field))
         add_method(source.setter(field, transform.frozen))
+        add_method(source.deleter(field, transform.frozen))
 
     if transform.init:
         add_method(source.init(transform.fields))

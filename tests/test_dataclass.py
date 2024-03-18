@@ -105,9 +105,12 @@ def test_frozen() -> None:
 
     obj = Class(1)
     with raises(FrozenInstanceError):
-        # Mypy rightfully warns that this assignment won't work on a frozen
+        # Mypy rightfully warns that this statement won't work on a frozen
         # dataclass.
         obj.a = 2  # type: ignore
+
+    with raises(FrozenInstanceError):
+        del obj.a
 
 
 def test_implicit_hash() -> None:

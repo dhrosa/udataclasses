@@ -55,11 +55,33 @@ def test_setter() -> None:
     assert out == expected
 
 
+def test_deleter() -> None:
+    out = source.deleter(Field("member"))
+    expected = """
+    @member.deleter
+    def member(self):
+        del self._member
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
 def test_setter_frozen() -> None:
     out = source.setter(Field("member"), frozen=True)
     expected = """
     @member.setter
     def member(self, value):
+        raise FrozenInstanceError('member')
+    """
+    expected = dedent(expected).strip()
+    assert out == expected
+
+
+def test_deleter_frozen() -> None:
+    out = source.deleter(Field("member"), frozen=True)
+    expected = """
+    @member.deleter
+    def member(self):
         raise FrozenInstanceError('member')
     """
     expected = dedent(expected).strip()

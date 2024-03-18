@@ -50,6 +50,19 @@ def setter(field: Field, frozen: bool = False) -> str:
     )
 
 
+def deleter(field: Field, frozen: bool = False) -> str:
+    """Generates a field deleter."""
+    return method(
+        decorator=f"@{field.name}.deleter",
+        name=field.name,
+        body=(
+            f"raise FrozenInstanceError('{field.name}')"
+            if frozen
+            else f"del self.{field._name}"
+        ),
+    )
+
+
 def repr(fields: list[Field]) -> str:
     """Generates the __repr__ method."""
     return method(
