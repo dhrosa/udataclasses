@@ -1,8 +1,10 @@
-from .constants import MISSING, MissingType
+from .constants import MISSING
 
 try:
     from collections.abc import Callable
     from typing import Any, TypeAlias
+
+    from .constants import MissingLiteral
 
     DefaultFactory: TypeAlias = Callable[[], Any]
 except ImportError:
@@ -17,8 +19,8 @@ class FrozenInstanceError(AttributeError):
 
 def field(
     *,
-    default: Any = MISSING,
-    default_factory: DefaultFactory | MissingType = MISSING,
+    default: Any | MissingLiteral = MISSING,
+    default_factory: DefaultFactory | MissingLiteral = MISSING,
     init: bool = True,
     repr: bool = True,
     hash: bool | None = None,
@@ -43,8 +45,8 @@ class Field:
 
     name: str
     type: type = object
-    default: Any
-    default_factory: DefaultFactory | MissingType
+    default: Any | MissingLiteral
+    default_factory: DefaultFactory | MissingLiteral
     init: bool
     repr: bool
     hash: bool | None
@@ -54,7 +56,7 @@ class Field:
         self,
         name: str = "<UNSET>",
         default: Any = MISSING,
-        default_factory: DefaultFactory | MissingType = MISSING,
+        default_factory: DefaultFactory | MissingLiteral = MISSING,
         init: bool = True,
         repr: bool = True,
         hash: bool | None = None,
