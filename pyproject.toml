@@ -36,10 +36,7 @@ check = [
       "pylama --ignore E203 src tests", # E203 is not pep8-compliant, and black breaks it
       "mypy --strict --pretty src tests",
 ] 
-all = [
-    "hatch run style:format",
-    "hatch run style:check",
-]
+all = ["format", "check"]
 
 [tool.hatch.envs.test]
 dependencies = ["pytest"]
