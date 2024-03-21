@@ -51,7 +51,9 @@ dependencies = ["sphinx", "sphinx-rtd-theme", "sphinx-design"]
 sphinx = "make -C docs html"
 
 [tool.hatch.envs.test.scripts]
-all = ["pytest"]
+micropython = "docker run --rm $(docker build --quiet -f tests/micropython/Dockerfile .)"
+host = "pytest"
+all = ["host", "micropython"]
 
 [tool.pytest.ini_options]
 addopts = "--no-header -W error --showlocals -vv"
