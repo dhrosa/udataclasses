@@ -1,6 +1,15 @@
 FROM micropython/unix
+
 WORKDIR /code
 ENV PYTHONPATH="/code:${PYTHONPATH}"
+
+# Library code
 ADD src .
-ADD tests/micropython/smoke_test.py .
-CMD micropython smoke_test.py
+# Unit tests. Currently only this test passes in MicroPython.
+ADD tests/test_transform_spec.py tests/
+# pytest shim
+ADD tests/micropython/pytest_shim.py pytest.py
+# Test runner
+ADD tests/micropython/run.py .
+
+CMD micropython run.py
