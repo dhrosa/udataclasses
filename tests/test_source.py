@@ -1,10 +1,20 @@
+from sys import implementation
+
 import udataclasses.source as source
 from udataclasses.field import Field
 
 
 def assert_lines(actual: str, expected_lines: list[str]) -> None:
     actual_lines = actual.splitlines()
-    assert actual_lines == expected_lines
+    if implementation.name != "micropython":
+        assert actual_lines == expected_lines
+    # Manually display diff inside MicroPython
+    if actual_lines == expected_lines:
+        return
+    print("Expected:")
+    print("\n".join(expected_lines))
+    print("Actual:")
+    print("\n".join(actual_lines))
 
 
 def test_init() -> None:
