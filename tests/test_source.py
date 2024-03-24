@@ -29,7 +29,7 @@ def test_init() -> None:
     assert_lines(
         out,
         [
-            "def __init__(self, a, b=__dataclass_default_b, c=FACTORY_SENTINEL):",
+            "def __init__(self, *, a, b=__dataclass_default_b, c=FACTORY_SENTINEL):",
             "    self._a = a",
             "    self._b = b",
             "    self._c = __dataclass_default_c() if c is FACTORY_SENTINEL else c",

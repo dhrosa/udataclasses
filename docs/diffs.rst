@@ -61,30 +61,69 @@ indicate that the field has no default value:
    Because of this, |udataclasses| fields have to be assigned a value in order
    for us to be able to detect the field.
 
+.. _field_ordering:
+
 Fields are sorted alphabetically instead of by source order
 -----------------------------------------------------------
 
-MicroPython does not store class attributes in creation order, so |decorator|
-cannot retain the order of the fields in the order they were listed in the
-user's source code. In order to provide a consistent order, |decorator|
-automatically sorts the field names alphabetically in its output. For example:
+Methods we generate such as |repr|, and functions such as |fields| sort fields
+alphabetically by name, rather than preserving the order in your source code.
+For example:
 
 .. code:: python
-          
-   from udataclasses import dataclass
+
+   from udataclasses import dataclass, field
 
    @dataclass
-   class Products:
-       bananas: int = 0
-       croissants: int = 0
-       apples: int = 0
+   class Product:
+       quantity: int = 0
+       name: str = field()
 
-   # This prints "Products(apples=3, bananas=1, croissants=3)"
-   print(Products(bananas=1, croissants=2, apples=3))
-       
+   # This prints 'Product(name="bolts", quantity=2)'
+   print(Product(quantity=2, name="bolts"))
+
+.. dropdown:: Explanation
+
+   MicroPython does not store class attributes in creation order, so |decorator|
+   cannot retain the order of the fields in the order they were listed in the
+   user's source code. In order to provide a consistent order, |decorator|
+   automatically sorts the field names alphabetically in its output.
 
 
 .. |decorator| replace:: :py:func:`@dataclass <udataclasses.dataclass>`
+.. |fields| replace:: :py:func:`fields <udataclasses.fields>`
+.. |repr| replace:: :py:meth:`__repr__ <object.__repr__>`
+
+|init| arguments are keyword-only
+----------------------------------
+
+Classes decorated with |decorator| will not allow passing positional arguments to |init|. For example:
+
+.. code:: python
+
+   from udataclasses import dataclass, field
+
+   @dataclass
+   class Product:
+       name: str = field()
+       quantity: int = 0
+
+   # The commented-out line below raises a TypeError
+   # Product("bolts", 2)
+
+   # This next line works however:
+   Product(name="bolts", quantity=2)
+
+
+.. dropdown:: Explanation
+
+   We sort fields :ref:`alphabetically <field_ordering>`. If we allowed
+   positional |init| arguments, the order of those arguments would not match the
+   field order in your code. Therefore, allowing positional arguments would be
+   very error-prone. Instead we only allow arguments to be passed in by keyword,
+   which has no ordering constraints.
+
+.. |init| replace:: :py:meth:`__init__ <object.__init__>`
 
 
 |field_type| has the wrong value

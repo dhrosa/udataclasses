@@ -25,7 +25,12 @@ __all__ = [
 def dataclass(cls: type[T]) -> type[T]: ...
 @overload
 def dataclass(cls: None) -> type[T]: ...
-@dataclass_transform(field_specifiers=(field, Field))
+@dataclass_transform(
+    field_specifiers=(field, Field),
+    # All fields are keyword-only because we don't preserve the user's field
+    # ordering.
+    kw_only_default=True,
+)
 @overload
 def dataclass(
     *,
