@@ -1,4 +1,10 @@
 .. |dataclasses| replace:: :py:mod:`dataclasses`
+.. |decorator| replace:: :py:func:`@dataclass <udataclasses.dataclass>`
+.. |field_type| replace:: :py:attr:`Field.type <udataclasses.Field.type>`
+.. |fields| replace:: :py:func:`fields <udataclasses.fields>`
+.. |field| replace:: :py:func:`field()<udataclasses.field>`
+.. |init| replace:: :py:meth:`__init__ <object.__init__>`
+.. |repr| replace:: :py:meth:`__repr__ <object.__repr__>`
 .. |udataclasses| replace:: :py:mod:`udataclasses`
 
 Differences between |udataclasses| and |dataclasses|
@@ -15,9 +21,11 @@ In MicroPython and CircuitPython, fhe following code does **not** work:
 
    @dataclass
    class Product:
+       name: str
        quantity: int
 
-The attribute must be given a default value:
+The attributes must either be given a default value, or you can use |field| with
+no arguments:
 
 .. code:: python
 
@@ -25,18 +33,8 @@ The attribute must be given a default value:
 
    @dataclass
    class Product:
+       name: str = field()
        quantity: int = 0
-
-Or you can use :py:func:`field()<udataclasses.field>` with no arguments to
-indicate that the field has no default value:
-
-.. code:: python
-
-   from udataclasses import dataclass, field
-
-   @dataclass
-   class Product:
-       quantity: int = field()
 
 .. dropdown:: Explanation
 
@@ -90,10 +88,6 @@ For example:
    automatically sorts the field names alphabetically in its output.
 
 
-.. |decorator| replace:: :py:func:`@dataclass <udataclasses.dataclass>`
-.. |fields| replace:: :py:func:`fields <udataclasses.fields>`
-.. |repr| replace:: :py:meth:`__repr__ <object.__repr__>`
-
 |init| arguments are keyword-only
 ----------------------------------
 
@@ -123,8 +117,6 @@ Classes decorated with |decorator| will not allow passing positional arguments t
    very error-prone. Instead we only allow arguments to be passed in by keyword,
    which has no ordering constraints.
 
-.. |init| replace:: :py:meth:`__init__ <object.__init__>`
-
 
 |field_type| has the wrong value
 --------------------------------
@@ -133,7 +125,6 @@ MicroPython does not store type annotations anywhere, so there is no way for
 |udataclasses| to know the correct type for a field. Instead, |field_type| is
 hardcoded to :py:class:`object`.
 
-.. |field_type| replace:: :py:attr:`Field.type <udataclasses.Field.type>`
 
 Missing features from |dataclasses|
 -----------------------------------
