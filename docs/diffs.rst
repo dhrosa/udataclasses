@@ -61,6 +61,31 @@ indicate that the field has no default value:
    Because of this, |udataclasses| fields have to be assigned a value in order
    for us to be able to detect the field.
 
+Fields are sorted alphabetically instead of by source order
+-----------------------------------------------------------
+
+MicroPython does not store class attributes in creation order, so |decorator|
+cannot retain the order of the fields in the order they were listed in the
+user's source code. In order to provide a consistent order, |decorator|
+automatically sorts the field names alphabetically in its output. For example:
+
+.. code:: python
+          
+   from udataclasses import dataclass
+
+   @dataclass
+   class Products:
+       bananas: int = 0
+       croissants: int = 0
+       apples: int = 0
+
+   # This prints "Products(apples=3, bananas=1, croissants=3)"
+   print(Products(bananas=1, croissants=2, apples=3))
+       
+
+
+.. |decorator| replace:: :py:func:`@dataclass <udataclasses.dataclass>`
+
 
 |field_type| has the wrong value
 --------------------------------

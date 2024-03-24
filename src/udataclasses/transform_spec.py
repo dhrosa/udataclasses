@@ -16,6 +16,7 @@ class TransformSpec:
     """
 
     fields: list[Field]
+    """Fields sorted alphabetically by name."""
 
     def __init__(
         self,
@@ -58,3 +59,4 @@ class TransformSpec:
                 field = Field(attr, value)
 
             self.fields.append(field)
+        self.fields.sort(key=lambda f: f.name)

@@ -45,17 +45,27 @@ def test_hash() -> None:
     assert TransformSpec(Empty, eq=False, frozen=False, unsafe_hash=True).hash is True
 
 
-def test_fields() -> None:
+def test_field_defaults() -> None:
     class Class:
-        missing_default = field()
-        implicit: int = 1
-        explicit = field(default=2)
+        a_missing = field()
+        b_implicit: int = 1
+        c_explicit = field(default=2)
 
         def method(self) -> None:
             pass
 
+    # Note: field names are sorted alphabetically.
     assert TransformSpec(Class).fields == [
-        Field("missing_default", MISSING),
-        Field("implicit", 1),
-        Field("explicit", 2),
+        Field("a_missing", MISSING),
+        Field("b_implicit", 1),
+        Field("c_explicit", 2),
     ]
+
+
+def test_fields_sorted_alphabetically() -> None:
+    class Class:
+        c: int = 0
+        a: int = 0
+        b: int = 0
+
+    assert TransformSpec(Class).fields == [Field("a"), Field("b"), Field("c")]
