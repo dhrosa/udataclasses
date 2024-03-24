@@ -5,9 +5,8 @@ ENV PYTHONPATH="/code:${PYTHONPATH}"
 
 # Library code
 ADD src .
-# Unit tests. Currently only these tests pass in MicroPython.
-ADD tests/test_transform_spec.py tests/
-ADD tests/test_source.py tests/
+# Unit tests.
+ADD tests/test_*.py tests/
 # pytest shim
 ADD tests/micropython/pytest_shim.py pytest.py
 # Test runner

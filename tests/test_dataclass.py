@@ -1,3 +1,5 @@
+from sys import implementation
+
 from pytest import raises
 
 from udataclasses import (
@@ -8,6 +10,26 @@ from udataclasses import (
     fields,
     is_dataclass,
 )
+
+try:
+    from collections.abc import Callable
+    from typing import TypeAlias
+
+    Test: TypeAlias = Callable[[], None]
+
+except ImportError:
+    pass
+
+
+def exclude_micropython(test: Test) -> Test:
+    """Decorator to exclude a test from running under MicroPython."""
+
+    def inner() -> None:
+        if implementation.name == "micropython":
+            return
+        test()
+
+    return inner
 
 
 def test_empty() -> None:
@@ -31,6 +53,7 @@ def test_init_excluded_fields() -> None:
     Class(1)
 
 
+@exclude_micropython
 def test_repr() -> None:
     @dataclass
     class Class:
@@ -76,6 +99,7 @@ def test_properties() -> None:
     assert obj.a == 2
 
 
+@exclude_micropython
 def test_eq() -> None:
     @dataclass
     class Class:
@@ -87,6 +111,7 @@ def test_eq() -> None:
     assert Class(1, 2, 3) != Class(1, 1, 3)
 
 
+@exclude_micropython
 def test_compare() -> None:
     @dataclass(order=True)
     class Class:
