@@ -52,6 +52,8 @@ class Field:
     hash: bool | None
     compare: bool
 
+    init_only: bool
+
     def __init__(
         self,
         name: str = "<UNSET>",
@@ -61,6 +63,7 @@ class Field:
         repr: bool = True,
         hash: bool | None = None,
         compare: bool = True,
+        init_only: bool = False,
     ) -> None:
         self.name = name
         self.default = default
@@ -69,6 +72,7 @@ class Field:
         self.repr = repr
         self.hash = hash
         self.compare = compare
+        self.init_only = init_only
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Field):
