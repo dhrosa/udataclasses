@@ -44,6 +44,21 @@ def test_init_is_keyword_only() -> None:
     Class(a=1, b=2)
 
 
+def test_init_calls_post_init() -> None:
+    a_value: int | None = None
+
+    @dataclass
+    class Class:
+        a: int = field()
+
+        def __post_init__(self) -> None:
+            nonlocal a_value
+            a_value = self.a
+
+    Class(a=1)
+    assert a_value == 1
+
+
 def test_repr() -> None:
     @dataclass
     class Class:

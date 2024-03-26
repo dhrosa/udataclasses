@@ -2,7 +2,7 @@ from .constants import MISSING
 from .field import Field
 
 
-def init(fields: list[Field]) -> str:
+def init(fields: list[Field], post_init: bool = False) -> str:
     """Generates the __init__ method."""
     init_fields = [f for f in fields if f.init]
     args: list[str] = []
@@ -25,6 +25,9 @@ def init(fields: list[Field]) -> str:
         if f.default_factory is not MISSING:
             value = f"{f.default_value_name}() if {f.name} is FACTORY_SENTINEL else {f.name}"
         body.append(f"self.{f._name} = {value}")
+
+    if post_init:
+        body.append("self.__post_init__()")
 
     return method(
         name="__init__",

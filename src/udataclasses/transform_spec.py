@@ -3,6 +3,7 @@ from .field import Field
 
 class TransformSpec:
     init: bool
+    post_init: bool
     repr: bool
     eq: bool
     order: bool
@@ -30,6 +31,7 @@ class TransformSpec:
         frozen: bool = False,
     ) -> None:
         self.init = init and ("__init__" not in cls.__dict__)
+        self.post_init = "__post_init__" in cls.__dict__
         self.repr = repr and ("__repr__" not in cls.__dict__)
         self.eq = eq
         self.order = order

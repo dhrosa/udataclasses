@@ -82,7 +82,7 @@ def make_methods(transform: TransformSpec) -> dict[str, Any]:
         add_method(source.deleter(field, transform.frozen))
 
     if transform.init:
-        add_method(source.init(transform.fields))
+        add_method(source.init(transform.fields, post_init=transform.post_init))
     if transform.repr:
         add_method(source.repr(transform.fields))
     if transform.eq:

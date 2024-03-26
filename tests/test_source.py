@@ -48,6 +48,19 @@ def test_init_empty() -> None:
     )
 
 
+def test_init_post_init() -> None:
+    out = source.init([Field("a"), Field("b")], post_init=True)
+    assert_lines(
+        out,
+        [
+            "def __init__(self, *, a, b):",
+            "    self._a = a",
+            "    self._b = b",
+            "    self.__post_init__()",
+        ],
+    )
+
+
 def test_getter() -> None:
     out = source.getter(Field("member"))
     assert_lines(

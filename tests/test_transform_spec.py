@@ -18,6 +18,19 @@ def test_init() -> None:
     assert not TransformSpec(HasInit, init=True).init
 
 
+def test_post_init() -> None:
+    class Empty:
+        pass
+
+    assert not TransformSpec(Empty).post_init
+
+    class HasPostInit:
+        def __post_init__(self) -> None:
+            pass
+
+    assert TransformSpec(HasPostInit).post_init
+
+
 def test_repr() -> None:
     class Empty:
         pass
