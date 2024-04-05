@@ -21,6 +21,10 @@ API Reference
 
    Refer to the documentation for :py:func:`dataclasses.is_dataclass`.
 
+.. autofunction:: replace
+
+   Refer to the documentation for :py:func:`dataclasses.replace`.
+
 .. autoexception:: FrozenInstanceError
 
    Refer to the documentation for :py:class:`dataclasses.FrozenInstanceError`.

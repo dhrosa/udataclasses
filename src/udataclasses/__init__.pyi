@@ -8,6 +8,7 @@ from typing import Any, Generic, TypeVar, dataclass_transform, overload
 
 from .constants import MISSING
 from .field import Field, FrozenInstanceError
+from .functions import fields, is_dataclass, replace
 
 T = TypeVar("T")
 
@@ -19,6 +20,7 @@ __all__ = [
     "field",
     "fields",
     "is_dataclass",
+    "replace",
 ]
 
 @overload
@@ -73,5 +75,3 @@ def field(
     hash: bool | None = ...,
     compare: bool = ...,
 ) -> Any: ...
-def fields(obj: object) -> tuple[Field, ...]: ...
-def is_dataclass(obj: object) -> bool: ...
