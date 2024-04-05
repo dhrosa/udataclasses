@@ -53,3 +53,14 @@ def test_replace_unknown_field() -> None:
 
     with raises(TypeError):
         replace(Class(a=1, b=2), c=3)
+
+
+def test_replace_init_false_field() -> None:
+    @dataclass
+    class Class:
+        a: int = field()
+        b: int = field(init=False)
+
+    obj = Class(a=1)
+    with raises(ValueError):
+        replace(obj, b=3)

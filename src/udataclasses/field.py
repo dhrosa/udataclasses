@@ -93,7 +93,7 @@ class Field:
 
     @property
     def contributes_to_hash(self) -> bool:
-        """True if this field should contributeto generated __hash__() method."""
+        """True if this field should contribute to generated __hash__() method."""
         if self.hash is None:
             return self.compare
         return self.hash
