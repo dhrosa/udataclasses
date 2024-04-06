@@ -61,6 +61,23 @@ def test_init_post_init() -> None:
     )
 
 
+def test_init_init_false_fields() -> None:
+    out = source.init(
+        [
+            Field("a", init=False, default=1),
+            Field("b", init=False, default_factory=lambda: 2),
+        ]
+    )
+    assert_lines(
+        out,
+        [
+            "def __init__(self):",
+            "    self._a = __dataclass_default_a",
+            "    self._b = __dataclass_default_b()",
+        ],
+    )
+
+
 def test_getter() -> None:
     out = source.getter(Field("member"))
     assert_lines(

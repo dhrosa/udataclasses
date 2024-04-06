@@ -4,9 +4,10 @@ from .field import Field
 
 def init(fields: list[Field], post_init: bool = False) -> str:
     """Generates the __init__ method."""
-    init_fields = [f for f in fields if f.init]
     args: list[str] = []
-    for field in init_fields:
+    for field in fields:
+        if not field.init:
+            continue
         arg = field.name
         if field.default is not MISSING:
             arg += f"={field.default_value_name}"
@@ -19,12 +20,7 @@ def init(fields: list[Field], post_init: bool = False) -> str:
     if args:
         args.insert(0, "*")
 
-    body: list[str] = []
-    for f in init_fields:
-        value = f.name
-        if f.default_factory is not MISSING:
-            value = f"{f.default_value_name}() if {f.name} is FACTORY_SENTINEL else {f.name}"
-        body.append(f"self.{f._name} = {value}")
+    body = [line for f in fields if (line := init_initialize_field(f))]
 
     if post_init:
         body.append("self.__post_init__()")
@@ -34,6 +30,25 @@ def init(fields: list[Field], post_init: bool = False) -> str:
         non_self_args=args,
         body=body or "pass",
     )
+
+
+def init_initialize_field(f: Field) -> str:
+    """__init__() body line to assign field an initial value.
+
+    Empty string if no initializion is needed.
+    """
+    left = f"self.{f._name}"
+    if f.init:
+        value = f.name
+        if f.default_factory is not MISSING:
+            value = f"{f.default_value_name}() if {f.name} is FACTORY_SENTINEL else {f.name}"
+        return f"{left} = {value}"
+    # Initialize init=False field
+    if f.default is not MISSING:
+        return f"{left} = {f.default_value_name}"
+    if f.default_factory is not MISSING:
+        return f"{left} = {f.default_value_name}()"
+    return ""
 
 
 def getter(field: Field) -> str:
