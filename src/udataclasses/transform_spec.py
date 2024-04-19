@@ -1,3 +1,4 @@
+from .constants import FIELDS_NAME
 from .field import Field
 
 
@@ -46,19 +47,21 @@ class TransformSpec:
         if unsafe_hash:
             self.hash = True
 
-        self.fields = []
-        for attr in cls.__dict__:
-            value = getattr(cls, attr)
+        fields: dict[str, Field] = {}
+        # Propagate any existing fields from base class.
+        fields.update(getattr(cls, FIELDS_NAME, {}))
+
+        for name, value in cls.__dict__.items():
             field: Field
             if isinstance(value, Field):
                 field = value
-                field.name = attr
+                field.name = name
             else:
                 # Convert implicit field to an explicit one.
-                if callable(value) or attr.startswith("__"):
+                if callable(value) or name.startswith("__"):
                     # Ignore methods and dunder attributes
                     continue
-                field = Field(attr, value)
+                field = Field(name, value)
 
-            self.fields.append(field)
-        self.fields.sort(key=lambda f: f.name)
+            fields[name] = field
+        self.fields = sorted(fields.values(), key=lambda f: f.name)

@@ -180,3 +180,34 @@ def test_unsafe_hash() -> None:
     assert hash(Class(a=1, b=2)) == hash(Class(a=1, b=2))
     assert hash(Class(a=1, b=2)) != hash(Class(a=0, b=2))
     assert hash(Class(a=1, b=2)) != hash(Class(a=1, b=1))
+
+
+def test_inherited_fields() -> None:
+    """Subclasses should inherit fields from base class."""
+
+    @dataclass
+    class Base:
+        a: int = field()
+
+    @dataclass
+    class Class(Base):
+        b: int = field()
+
+    obj = Class(a=1, b=2)
+    assert obj.a == 1
+    assert obj.b == 2
+
+
+def test_inherited_fields_override() -> None:
+    """Subclass fields with the same name should take precedence over base class fields."""
+
+    @dataclass
+    class Base:
+        field: int = 1
+
+    @dataclass
+    class Class(Base):
+        field: int = 2
+
+    assert Base().field == 1
+    assert Class().field == 2
