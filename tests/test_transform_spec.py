@@ -82,3 +82,20 @@ def test_fields_sorted_alphabetically() -> None:
         b: int = 0
 
     assert TransformSpec(Class).fields == [Field("a"), Field("b"), Field("c")]
+
+
+def test_fields_non_field_attributes_excluded() -> None:
+    class Class:
+        @staticmethod
+        def smethod() -> int:
+            return 0
+
+        @classmethod
+        def cmethod(cls) -> int:
+            return 1
+
+        @property
+        def prop(self) -> int:
+            return 2
+
+    assert TransformSpec(Class).fields == []

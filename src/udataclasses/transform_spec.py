@@ -51,14 +51,26 @@ class TransformSpec:
         # Propagate any existing fields from base class.
         fields.update(getattr(cls, FIELDS_NAME, {}))
 
-        for name, value in cls.__dict__.items():
+        for name in cls.__dict__.keys():
+            # This is subtly different than fetching the value from __dict__.
+            # classmethods in particular are not callable when accessed via
+            # __dict__.
+            value = getattr(cls, name)
             field: Field
             if isinstance(value, Field):
                 field = value
                 field.name = name
             else:
                 # Convert implicit field to an explicit one.
-                if callable(value) or name.startswith("__"):
+
+                # Exclude properties, methods, and other non-field attributes.
+                # Normally these would be not be present in the annotations
+                # dict.
+                if (
+                    isinstance(value, property)
+                    or callable(value)
+                    or name.startswith("__")
+                ):
                     # Ignore methods and dunder attributes
                     continue
                 field = Field(name, value)
