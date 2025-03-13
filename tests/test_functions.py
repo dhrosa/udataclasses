@@ -144,3 +144,21 @@ def test_asdict_nested_dict() -> None:
             "b": {"value": 3, "children": {}},
         },
     }
+
+
+def test_asdict_custom_factory() -> None:
+    @dataclass
+    class Class:
+        value: int = field()
+        child: Any = None
+
+    def dict_factory(args: list[tuple[str, Any]]) -> list[tuple[str, Any]]:
+        def first(arg: tuple[str, Any]) -> str:
+            return arg[0]
+
+        return sorted(args, key=first)
+
+    assert asdict(Class(value=1, child=Class(value=2)), dict_factory=dict_factory) == [
+        ("child", [("child", None), ("value", 2)]),
+        ("value", 1),
+    ]

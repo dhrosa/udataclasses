@@ -11,6 +11,7 @@ from .field import Field, FrozenInstanceError
 from .functions import fields, is_dataclass, replace
 
 T = TypeVar("T")
+R = TypeVar("R")
 
 __all__ = [
     "Field",
@@ -83,4 +84,4 @@ def asdict(obj: T) -> dict[str, Any]: ...
 
 # Generic overload with custom `dict_factory`.
 @overload
-def asdict(obj: T, *, dict_factory: Callable[[list[tuple[str, Any]]], T]) -> T: ...
+def asdict(obj: T, *, dict_factory: Callable[[list[tuple[str, Any]]], R]) -> R: ...
