@@ -8,6 +8,7 @@ except ImportError:
 from udataclasses import (
     MISSING,
     asdict,
+    astuple,
     dataclass,
     field,
     fields,
@@ -162,3 +163,12 @@ def test_asdict_custom_factory() -> None:
         ("child", [("child", None), ("value", 2)]),
         ("value", 1),
     ]
+
+
+def test_astuple() -> None:
+    @dataclass
+    class Class:
+        value: int = field()
+
+    with raises(NotImplementedError):
+        astuple(Class(value=1))

@@ -37,6 +37,11 @@ def replace(obj: T, **changes: Any) -> T:
     return (type(obj))(**init_args)
 
 
+def astuple(obj: object, *, tuple_factory: Any = tuple) -> Any:
+    """Intentionally unimplemented as we do not preserve field ordering."""
+    raise NotImplementedError("astuple() is intentionally not implemented. ")
+
+
 def asdict(
     obj: object,
     *,
