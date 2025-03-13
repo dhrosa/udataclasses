@@ -9,6 +9,14 @@ API Reference
 
    Refer to the documentation for :py:func:`dataclasses.dataclass`.
 
+.. autofunction:: asdict
+
+   Refer to the documentation for :py:func:`dataclasses.asdict`
+
+.. autofunction:: astuple
+
+   Refer to the documentation for :py:func:`dataclasses.astuple`
+
 .. autofunction:: field
 
    Refer to the documentation for :py:func:`dataclasses.field`.
@@ -21,17 +29,13 @@ API Reference
 
    Refer to the documentation for :py:func:`dataclasses.is_dataclass`.
 
+.. autofunction:: make_dataclass
+
+   Refer to the documentation for :py:func:`dataclasses.make_dataclass`.
+
 .. autofunction:: replace
 
    Refer to the documentation for :py:func:`dataclasses.replace`.
-
-.. autofunction:: asdict
-
-   Refer to the documentation for :py:func:`dataclasses.asdict`
-
-.. autofunction:: astuple
-
-   Refer to the documentation for :py:func:`dataclasses.astuple`
 
 .. autoexception:: FrozenInstanceError
 

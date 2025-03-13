@@ -1,7 +1,7 @@
 from .constants import MISSING
 from .decorator import dataclass
 from .field import Field, FrozenInstanceError, field
-from .functions import asdict, astuple, fields, is_dataclass, replace
+from .functions import asdict, astuple, fields, is_dataclass, make_dataclass, replace
 
 VERSION = "0.0.0"
 """Read and written by the ``hatch version`` command."""
@@ -16,5 +16,6 @@ __all__ = [
     "field",
     "fields",
     "is_dataclass",
+    "make_dataclass",
     "replace",
 ]

@@ -13,6 +13,7 @@ from udataclasses import (
     field,
     fields,
     is_dataclass,
+    make_dataclass,
     replace,
 )
 
@@ -172,3 +173,37 @@ def test_astuple() -> None:
 
     with raises(NotImplementedError):
         astuple(Class(value=1))
+
+
+def test_make_dataclass() -> None:
+    Class = make_dataclass(
+        "Class",
+        [
+            ("a", int, field(default=1)),
+            ("b", int),
+            "c",
+        ],
+    )
+
+    assert is_dataclass(Class)
+
+    class_fields = fields(Class)
+    assert len(class_fields) == 3
+    assert class_fields[0].name == "a"
+    assert class_fields[0].default == 1
+    assert class_fields[1].name == "b"
+    assert class_fields[1].default == MISSING
+    assert class_fields[2].name == "c"
+    assert class_fields[2].default == MISSING
+
+
+def test_make_dataclass_namespace() -> None:
+    Class = make_dataclass(
+        "Class", ["value"], namespace={"square": lambda self: self.value**2}
+    )
+
+    class_fields = fields(Class)
+    assert len(class_fields) == 1
+    assert class_fields[0].name == "value"
+
+    assert Class(value=2).square() == 4

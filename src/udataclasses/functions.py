@@ -1,10 +1,11 @@
 """Module-level dataclasses functions."""
 
 from .constants import FIELDS_NAME
+from .decorator import _dataclass
 from .field import Field
 
 try:
-    from typing import Any, TypeVar
+    from typing import Any, Iterable, TypeVar
 
     T = TypeVar("T")
 except ImportError:
@@ -18,9 +19,12 @@ def is_dataclass(obj: object) -> bool:
 
 
 def fields(obj: object) -> tuple[Field, ...]:
-    """Retrieve all the Fields of an object or class."""
+    """Retrieve all the Fields of an object or class.
+
+    Fields are returned in alphabetical order by name.
+    """
     cls = obj if isinstance(obj, type) else type(obj)
-    return tuple(getattr(cls, FIELDS_NAME).values())
+    return tuple(sorted(getattr(cls, FIELDS_NAME).values(), key=lambda f: f.name))
 
 
 def replace(obj: T, **changes: Any) -> T:
@@ -78,3 +82,48 @@ def asdict_value(obj: object, dict_factory: Any) -> Any:
             for key, value in obj.items()
         }
     raise TypeError(f"Unsupported type: {type(obj)}")
+
+
+def make_dataclass(
+    cls_name: str,
+    fields: Iterable[str | tuple[str, Any] | tuple[str, Any, Any]],
+    *,
+    bases: tuple[type, ...] = (),
+    namespace: dict[str, Any] | None = None,
+    init: bool = True,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = False,
+    unsafe_hash: bool = False,
+    frozen: bool = False,
+) -> type[Any]:
+    """Dynamically create a dataclass."""
+    # Attributes of dynamically-created class.
+    attrs = dict(**(namespace or {}))
+    for f in fields:
+        # Normalize fields to 3-tuple form.
+        if isinstance(f, str):
+            # str to 3-tuple
+            f = (f, object, Field())
+        if not isinstance(f, tuple):
+            raise TypeError(
+                f"Field specifier must be a str or tuple. Instead got {type(f)}"
+            )
+        if len(f) == 2:
+            # 2-tuple to 3-tuple
+            f = (f[0], object, Field())
+        if len(f) != 3:
+            raise TypeError(
+                f"Field specifier must have length 2 or 3. Instead got {len(f)}"
+            )
+        name, _, field = f
+        attrs[name] = field
+    return _dataclass(
+        type(cls_name, bases, attrs),
+        init=init,
+        repr=repr,
+        eq=eq,
+        order=order,
+        unsafe_hash=unsafe_hash,
+        frozen=frozen,
+    )
