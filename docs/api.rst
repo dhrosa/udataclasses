@@ -25,6 +25,14 @@ API Reference
 
    Refer to the documentation for :py:func:`dataclasses.replace`.
 
+.. autofunction:: asdict
+
+   Refer to the documentation for :py:func:`dataclasses.asdict`
+
+.. autofunction:: astuple
+
+   Refer to the documentation for :py:func:`dataclasses.astuple`
+
 .. autoexception:: FrozenInstanceError
 
    Refer to the documentation for :py:class:`dataclasses.FrozenInstanceError`.
