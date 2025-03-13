@@ -1,6 +1,19 @@
 from pytest import raises
 
-from udataclasses import MISSING, dataclass, field, fields, is_dataclass, replace
+try:
+    from typing import Any
+except ImportError:
+    pass
+
+from udataclasses import (
+    MISSING,
+    asdict,
+    dataclass,
+    field,
+    fields,
+    is_dataclass,
+    replace,
+)
 
 
 def test_is_dataclass() -> None:
@@ -64,3 +77,70 @@ def test_replace_init_false_field() -> None:
     obj = Class(a=1)
     with raises(ValueError):
         replace(obj, b=3)
+
+
+def test_asdict_nondataclass() -> None:
+    with raises(TypeError):
+        asdict(3)
+
+
+def test_asdict_flat() -> None:
+    @dataclass
+    class Class:
+        a: int = field()
+        b: int = 2
+
+    assert asdict(Class(a=1)) == {"a": 1, "b": 2}
+
+
+def test_asdict_nested_dataclass() -> None:
+    @dataclass
+    class Class:
+        value: int = field()
+        child: Any = None
+
+    assert asdict(Class(value=1, child=Class(value=2))) == {
+        "value": 1,
+        "child": {"value": 2, "child": None},
+    }
+
+
+def test_asdict_nested_list() -> None:
+    @dataclass
+    class Class:
+        value: int = field()
+        children: list["Class"] = field(default_factory=list)
+
+    assert asdict(Class(value=1, children=[Class(value=2), Class(value=3)])) == {
+        "value": 1,
+        "children": [{"value": 2, "children": []}, {"value": 3, "children": []}],
+    }
+
+
+def test_asdict_nested_tuple() -> None:
+    @dataclass
+    class Class:
+        value: int = field()
+        children: tuple["Class", "Class"] | None = None
+
+    assert asdict(Class(value=1, children=(Class(value=2), Class(value=3)))) == {
+        "value": 1,
+        "children": ({"value": 2, "children": None}, {"value": 3, "children": None}),
+    }
+
+
+def test_asdict_nested_dict() -> None:
+    @dataclass
+    class Class:
+        value: int = field()
+        children: dict[str, "Class"] = field(default_factory=dict)
+
+    assert asdict(
+        Class(value=1, children={"a": Class(value=2), "b": Class(value=3)})
+    ) == {
+        "value": 1,
+        "children": {
+            "a": {"value": 2, "children": {}},
+            "b": {"value": 3, "children": {}},
+        },
+    }

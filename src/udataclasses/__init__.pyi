@@ -8,7 +8,7 @@ from typing import Any, Generic, TypeVar, dataclass_transform, overload
 
 from .constants import MISSING
 from .field import Field, FrozenInstanceError
-from .functions import fields, is_dataclass, replace
+from .functions import asdict, fields, is_dataclass, replace
 
 T = TypeVar("T")
 
@@ -16,6 +16,7 @@ __all__ = [
     "Field",
     "FrozenInstanceError",
     "MISSING",
+    "asdict",
     "dataclass",
     "field",
     "fields",
