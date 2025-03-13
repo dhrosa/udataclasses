@@ -8,7 +8,7 @@ from typing import Any, Generic, TypeVar, dataclass_transform, overload
 
 from .constants import MISSING
 from .field import Field, FrozenInstanceError
-from .functions import asdict, fields, is_dataclass, replace
+from .functions import fields, is_dataclass, replace
 
 T = TypeVar("T")
 
@@ -76,3 +76,11 @@ def field(
     hash: bool | None = ...,
     compare: bool = ...,
 ) -> Any: ...
+
+# Overload with no `dict_factory` specified, which returns a simple dict.
+@overload
+def asdict(obj: T) -> dict[str, Any]: ...
+
+# Generic overload with custom `dict_factory`.
+@overload
+def asdict(obj: T, *, dict_factory: Callable[[list[tuple[str, Any]]], T]) -> T: ...
