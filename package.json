@@ -1,0 +1,11 @@
+{
+    "urls": [
+        ["udataclasses/__init__.py", "src/udataclasses/__init__.py"],
+        ["udataclasses/constants.py", "src/udataclasses/constants.py"],
+        ["udataclasses/decorator.py", "src/udataclasses/decorator.py"],
+        ["udataclasses/field.py", "src/udataclasses/field.py"],
+        ["udataclasses/functions.py", "src/udataclasses/functions.py"],
+        ["udataclasses/source.py", "src/udataclasses/source.py"],
+        ["udataclasses/transform_spec.py", "src/udataclasses/transform_spec.py"]
+    ]
+}
