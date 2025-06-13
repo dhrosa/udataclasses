@@ -1,11 +1,11 @@
 {
     "urls": [
-        ["udataclasses/__init__.py", "src/udataclasses/__init__.py"],
-        ["udataclasses/constants.py", "src/udataclasses/constants.py"],
-        ["udataclasses/decorator.py", "src/udataclasses/decorator.py"],
-        ["udataclasses/field.py", "src/udataclasses/field.py"],
-        ["udataclasses/functions.py", "src/udataclasses/functions.py"],
-        ["udataclasses/source.py", "src/udataclasses/source.py"],
-        ["udataclasses/transform_spec.py", "src/udataclasses/transform_spec.py"]
+        ["udataclasses/__init__.py", "github:dhrosa/udataclasses/src/udataclasses/__init__.py"],
+        ["udataclasses/constants.py", "github:dhrosa/udataclasses/src/udataclasses/constants.py"],
+        ["udataclasses/decorator.py", "github:dhrosa/udataclasses/src/udataclasses/decorator.py"],
+        ["udataclasses/field.py", "github:dhrosa/udataclasses/src/udataclasses/field.py"],
+        ["udataclasses/functions.py", "github:dhrosa/udataclasses/src/udataclasses/functions.py"],
+        ["udataclasses/source.py", "github:dhrosa/udataclasses/src/udataclasses/source.py"],
+        ["udataclasses/transform_spec.py", "github:dhrosa/udataclasses/src/udataclasses/transform_spec.py"]
     ]
 }
